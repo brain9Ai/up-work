@@ -1,0 +1,42 @@
+{
+  "name": "talking-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "vercel-build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "generate-favicons": "node scripts/generate-favicons.js",
+    "generate-favicons-alt": "node scripts/generate-favicons-alt.js"
+  },
+  "dependencies": {
+    "@vapi-ai/web": "^2.2.7",
+    "@vercel/analytics": "^1.5.0",
+    "@vercel/og": "^0.6.8",
+    "autoprefixer": "^10.4.17",
+    "axios": "^1.9.0",
+    "canvas": "^3.1.0",
+    "next": "^14.1.0",
+    "nvm": "^0.0.4",
+    "postcss": "^8.4.35",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-ga4": "^2.1.0",
+    "react-markdown": "^9.1.0",
+    "tailwindcss": "^3.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.13",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "chalk": "^4.1.2",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.1.0",
+    "favicons": "^7.1.4",
+    "mkdirp": "^3.0.1",
+    "sharp": "^0.33.5",
+    "typescript": "^5.3.3"
+  }
+}

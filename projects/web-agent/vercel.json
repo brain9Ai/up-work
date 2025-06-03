@@ -1,0 +1,33 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "devCommand": "next dev",
+  "installCommand": "npm install",
+  "redirects": [
+    { "source": "/products/anaya", "destination": "/products/anaya-webAgent", "permanent": true },
+    { "source": "/products/anaya-pro", "destination": "/products/anaya-webAgent-pro", "permanent": true },
+    { "source": "/products/anaya-enterprise", "destination": "/products/anaya-webAgent-enterprise", "permanent": true },
+    { "source": "/products/anaya-saas", "destination": "/products/anaya-webAgent-saas", "permanent": true },
+    { "source": "/products/anaya-ecommerce", "destination": "/products/anaya-webAgent-ecommerce", "permanent": true },
+    { "source": "/products/rocketsingh", "destination": "/products/rocketsingh-salesAgent", "permanent": true },
+    { "source": "/products/rocketsingh-saas", "destination": "/products/rocketsingh-salesAgent-saas", "permanent": true },
+    { "source": "/products/rocketsingh-ecommerce", "destination": "/products/rocketsingh-salesAgent-ecommerce", "permanent": true },
+    { "source": "/products/sam", "destination": "/products/sam-leadGenAgent", "permanent": true },
+    { "source": "/products/sam-b2b", "destination": "/products/sam-leadGenAgent-b2b", "permanent": true },
+    { "source": "/products/sam-realestate", "destination": "/products/sam-leadGenAgent-realestate", "permanent": true },
+    { "source": "/products/liya", "destination": "/products/liya-appointmentSetter", "permanent": true },
+    { "source": "/products/liya-medical", "destination": "/products/liya-appointmentSetter-medical", "permanent": true },
+    { "source": "/products/liya-salon", "destination": "/products/liya-appointmentSetter-salon", "permanent": true },
+    { "source": "/products/ahana", "destination": "/products/ahana-socialMediaAgent", "permanent": true },
+    { "source": "/products/ahana-content", "destination": "/products/ahana-socialMediaAgent-content", "permanent": true },
+    { "source": "/products/ahana-support", "destination": "/products/ahana-socialMediaAgent-support", "permanent": true },
+    { "source": "/anaya", "destination": "/products/anaya-webAgent", "permanent": true },
+    { "source": "/anaya-pro", "destination": "/products/anaya-webAgent-pro", "permanent": true },
+    { "source": "/rocketsingh", "destination": "/products/rocketsingh-salesAgent", "permanent": true },
+    { "source": "/sam", "destination": "/products/sam-leadGenAgent", "permanent": true },
+    { "source": "/liya", "destination": "/products/liya-appointmentSetter", "permanent": true },
+    { "source": "/ahana", "destination": "/products/ahana-socialMediaAgent", "permanent": true }
+  ]
+}

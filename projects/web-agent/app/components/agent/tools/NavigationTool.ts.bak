@@ -1,0 +1,1667 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import toolManager, { Tool } from '../ToolManager';
+import { forceScrollToSection } from '../../utils/scrollHelper';
+import { setAgentActive } from '../SessionManager';
+
+// Define the page routes available in the application
+interface Page {
+  id: string;
+  name: string;
+  path: string;
+  description: string;
+  keywords?: string[]; // Keywords that might be mentioned when discussing this page
+}
+
+const availablePages: Page[] = [
+  {
+    id: 'home',
+    name: 'Home',
+    path: '/',
+    description: 'The main landing page of the application',
+    keywords: ['home', 'main', 'landing', 'homepage']
+  },
+  // Section anchors on the homepage
+  {
+    id: 'transform-section',
+    name: 'Transform Your Website with Anaya',
+    path: '/#transform-your-website',
+    description: 'Section about how Anaya can transform websites with voice-powered AI',
+    keywords: ['transform website', 'website transformation', 'voice powered', 'web integration']
+  },
+  {
+    id: 'anaya-in-action',
+    name: 'See Anaya In Action',
+    path: '/#anaya-in-action',
+    description: 'Section showcasing Anaya in action across different industries with use cases',
+    keywords: ['showcase', 'demo', 'anaya in action', 'use cases', 'examples', 'industries']
+  },
+  {
+    id: 'products',
+    name: 'Products',
+    path: '/products',
+    description: 'View our product catalog and offerings',
+    keywords: ['products', 'catalog', 'agents', 'offerings', 'solutions']
+  },
+  // Product detail pages for specific agents
+  {
+    id: 'anaya',
+    name: 'Anaya WebAgent',
+    path: '/products/anaya',
+    description: 'Details about Anaya, the WebAgent for website navigation and lead capture',
+    keywords: ['anaya', 'webagent', 'web assistant', 'website navigation', 'lead capture']
+  },
+  // Anaya variations
+  {
+    id: 'anaya-pro',
+    name: 'Anaya Pro WebAgent',
+    path: '/products/anaya-webAgent-pro',
+    description: 'Details about Anaya Pro, the advanced WebAgent with premium features',
+    keywords: ['anaya pro', 'premium webagent', 'advanced web assistant', 'professional web agent']
+  },
+  {
+    id: 'anaya-enterprise',
+    name: 'Anaya Enterprise WebAgent',
+    path: '/products/anaya-webAgent-enterprise',
+    description: 'Details about Anaya Enterprise, the enterprise-grade WebAgent for large organizations',
+    keywords: ['anaya enterprise', 'enterprise webagent', 'enterprise web assistant', 'corporate web agent']
+  },
+  {
+    id: 'rocketsingh',
+    name: 'RocketSingh Sales Agent',
+    path: '/products/rocketsingh-salesAgent',
+    description: 'Details about RocketSingh, the Sales and Business Growth Expert',
+    keywords: ['rocketsingh', 'rocket singh', 'sales agent', 'business growth', 'sales']
+  },
+  // RocketSingh variations
+  {
+    id: 'rocketsingh-saas',
+    name: 'RocketSingh SaaS Sales Agent',
+    path: '/products/rocketsingh-salesAgent-saas',
+    description: 'Details about RocketSingh SaaS, specialized for Software-as-a-Service businesses',
+    keywords: ['rocketsingh saas', 'saas sales', 'software sales agent', 'subscription sales']
+  },
+  {
+    id: 'rocketsingh-ecommerce',
+    name: 'RocketSingh Commerce Sales Agent',
+    path: '/products/rocketsingh-salesAgent-ecommerce',
+    description: 'Details about RocketSingh Commerce, specialized for e-commerce businesses',
+    keywords: ['rocketsingh commerce', 'ecommerce sales', 'online sales agent', 'e-commerce sales']
+  },
+  {
+    id: 'liya',
+    name: 'Liya Appointment Agent',
+    path: '/products/liya-appointmentSetter',
+    description: 'Details about Liya, the Appointment Setter Agent',
+    keywords: ['liya', 'appointment', 'scheduler', 'booking', 'calendar']
+  },
+  // Liya variations
+  {
+    id: 'liya-medical',
+    name: 'Liya Medical Appointment Agent',
+    path: '/products/liya-appointmentSetter-medical',
+    description: 'Details about Liya Medical, specialized for healthcare providers',
+    keywords: ['liya medical', 'healthcare appointment', 'medical scheduler', 'doctor appointment']
+  },
+  {
+    id: 'liya-salon',
+    name: 'Liya Salon Appointment Agent',
+    path: '/products/liya-appointmentSetter-salon',
+    description: 'Details about Liya Salon, specialized for beauty and wellness businesses',
+    keywords: ['liya salon', 'beauty appointment', 'salon scheduler', 'spa booking']
+  },
+  {
+    id: 'ahana',
+    name: 'Ahana Social Media Support Agent',
+    path: '/products/ahana-socialMediaAgent',
+    description: 'Details about Ahana, the Social Media Support Agent',
+    keywords: ['ahana', 'social media', 'social', 'support', 'messaging']
+  },
+  // Ahana variations
+  {
+    id: 'ahana-content',
+    name: 'Ahana Content Social Media Agent',
+    path: '/products/ahana-socialMediaAgent-content',
+    description: 'Details about Ahana Content, specialized in content curation and audience engagement',
+    keywords: ['ahana content', 'content marketing', 'social content', 'audience engagement']
+  },
+  {
+    id: 'ahana-support',
+    name: 'Ahana Support Social Media Agent',
+    path: '/products/ahana-socialMediaAgent-support',
+    description: 'Details about Ahana Support, specialized in customer support through social channels',
+    keywords: ['ahana support', 'social support', 'customer service', 'support agent']
+  },
+  {
+    id: 'services',
+    name: 'Services',
+    path: '/services',
+    description: 'Explore our professional services',
+    keywords: ['services', 'professional', 'automation', 'solutions']
+  },
+  {
+    id: 'about',
+    name: 'About Us',
+    path: '/about',
+    description: 'Learn more about our company and team',
+    keywords: ['about', 'company', 'team', 'about us']
+  },
+  {
+    id: 'contact',
+    name: 'Contact',
+    path: '/contact',
+    description: 'Get in touch with our customer service team',
+    keywords: ['contact', 'demo', 'call', 'schedule', 'booking', 'appointment', 'get in touch', 'talk to us']
+  },
+  {
+    id: 'sam',
+    name: 'Sam Lead Generation Agent',
+    path: '/products/sam-leadGenAgent',
+    description: 'Details about Sam, the Lead Generation Expert',
+    keywords: ['sam', 'lead generation', 'leads', 'lead gen', 'business growth']
+  },
+  // Sam variations
+  {
+    id: 'sam-b2b',
+    name: 'Sam B2B Lead Generation Agent',
+    path: '/products/sam-leadGenAgent-b2b',
+    description: 'Details about Sam B2B, specialized for business-to-business lead generation',
+    keywords: ['sam b2b', 'b2b leads', 'business leads', 'account-based marketing']
+  },
+  {
+    id: 'sam-realestate',
+    name: 'Sam Realty Lead Generation Agent',
+    path: '/products/sam-leadGenAgent-realestate',
+    description: 'Details about Sam Realty, specialized for real estate lead generation',
+    keywords: ['sam realty', 'real estate leads', 'property leads', 'real estate marketing']
+  },
+  {
+    id: 'blog',
+    name: 'Blog',
+    path: '/blog',
+    description: 'Read our blog posts about AI automation insights and industry trends',
+    keywords: ['blog', 'articles', 'posts', 'insights', 'guides', 'news']
+  },
+  // Featured article page
+  {
+    id: 'blog-featured',
+    name: 'Featured Blog Articles',
+    path: '/blog?category=Featured',
+    description: 'Featured blog articles that highlight our best content and insights',
+    keywords: ['featured articles', 'featured blog', 'highlight articles', 'top blog posts', 'recommended reading']
+  },
+  // Blog category pages
+  {
+    id: 'blog-ai',
+    name: 'AI Blog Articles',
+    path: '/blog?category=AI',
+    description: 'Blog articles about artificial intelligence and machine learning',
+    keywords: ['ai blog', 'artificial intelligence articles', 'machine learning posts']
+  },
+  {
+    id: 'blog-ai-strategy',
+    name: 'AI Strategy Articles',
+    path: '/blog?category=AI%20Strategy',
+    description: 'Blog articles about AI strategy and implementation planning',
+    keywords: ['ai strategy', 'ai planning', 'strategic ai', 'ai implementation strategy']
+  },
+  {
+    id: 'blog-ai-integration',
+    name: 'AI Integration Articles',
+    path: '/blog?category=AI%20Integration',
+    description: 'Blog articles about integrating AI into business systems and processes',
+    keywords: ['ai integration', 'system integration', 'ai implementation', 'business automation']
+  },
+  {
+    id: 'blog-ai-technology',
+    name: 'AI Technology Articles',
+    path: '/blog?category=AI%20Technology',
+    description: 'Blog articles about AI technology advancements and applications',
+    keywords: ['ai technology', 'artificial intelligence technology', 'advanced ai']
+  },
+  {
+    id: 'blog-voice-ai',
+    name: 'Voice AI Blog Articles',
+    path: '/blog?category=Voice%20AI',
+    description: 'Blog articles about voice assistants and voice technology',
+    keywords: ['voice ai blog', 'voice assistant articles', 'voice technology']
+  },
+  {
+    id: 'blog-website-navigation',
+    name: 'Website Navigation Blog Articles',
+    path: '/blog?category=Website%20Navigation',
+    description: 'Blog articles about website navigation and user experience',
+    keywords: ['website navigation blog', 'user experience articles', 'web design']
+  },
+  {
+    id: 'blog-business-automation',
+    name: 'Business Automation Articles',
+    path: '/blog?category=Business%20Automation',
+    description: 'Blog articles about business process automation',
+    keywords: ['business automation', 'process automation', 'workflow automation']
+  },
+  {
+    id: 'blog-digital-transformation',
+    name: 'Digital Transformation Articles',
+    path: '/blog?category=Digital%20Transformation',
+    description: 'Blog articles about digital transformation strategies and implementation',
+    keywords: ['digital transformation', 'business digitization', 'digital strategy']
+  },
+  {
+    id: 'blog-business-operations',
+    name: 'Business Operations Articles',
+    path: '/blog?category=Business%20Operations',
+    description: 'Blog articles about optimizing business operations',
+    keywords: ['business operations', 'operational efficiency', 'business processes']
+  },
+  {
+    id: 'blog-customer-experience',
+    name: 'Customer Experience Articles',
+    path: '/blog?category=Customer%20Experience',
+    description: 'Blog articles about enhancing customer experience',
+    keywords: ['customer experience', 'cx', 'customer satisfaction']
+  },
+  {
+    id: 'blog-digital-strategy',
+    name: 'Digital Strategy Articles',
+    path: '/blog?category=Digital%20Strategy',
+    description: 'Blog articles about digital strategy development',
+    keywords: ['digital strategy', 'online strategy', 'digital planning']
+  },
+  {
+    id: 'blog-business-transformation',
+    name: 'Business Transformation Articles',
+    path: '/blog?category=Business%20Transformation',
+    description: 'Blog articles about business transformation initiatives',
+    keywords: ['business transformation', 'organizational change', 'business evolution']
+  },
+  {
+    id: 'blog-workplace-evolution',
+    name: 'Workplace Evolution Articles',
+    path: '/blog?category=Workplace%20Evolution',
+    description: 'Blog articles about the evolution of workplace practices',
+    keywords: ['workplace evolution', 'future of work', 'work transformation']
+  },
+  {
+    id: 'blog-lead-generation',
+    name: 'Lead Generation Blog Articles',
+    path: '/blog?category=Lead%20Generation',
+    description: 'Blog articles about lead generation and marketing strategies',
+    keywords: ['lead generation blog', 'marketing articles', 'lead capture']
+  },
+  {
+    id: 'blog-user-experience',
+    name: 'User Experience Articles',
+    path: '/blog?category=User%20Experience',
+    description: 'Blog articles about user experience design and principles',
+    keywords: ['user experience', 'ux design', 'user interface']
+  },
+  {
+    id: 'blog-technology-comparison',
+    name: 'Technology Comparison Articles',
+    path: '/blog?category=Technology%20Comparison',
+    description: 'Blog articles comparing different technologies and solutions',
+    keywords: ['technology comparison', 'solution comparison', 'technology evaluation']
+  },
+  {
+    id: 'blog-voice-agents',
+    name: 'Voice Agents Articles',
+    path: '/blog?category=Voice%20Agents',
+    description: 'Blog articles about voice agent technology and applications',
+    keywords: ['voice agents', 'voice assistants', 'voice ai agents']
+  },
+  {
+    id: 'blog-customer-support',
+    name: 'Customer Support Articles',
+    path: '/blog?category=Customer%20Support',
+    description: 'Blog articles about customer support automation and strategies',
+    keywords: ['customer support', 'support automation', 'customer service']
+  },
+  {
+    id: 'blog-sales-automation',
+    name: 'Sales Automation Articles',
+    path: '/blog?category=Sales%20Automation',
+    description: 'Blog articles about sales process automation',
+    keywords: ['sales automation', 'automated selling', 'sales process automation']
+  },
+  {
+    id: 'blog-revenue-growth',
+    name: 'Revenue Growth Articles',
+    path: '/blog?category=Revenue%20Growth',
+    description: 'Blog articles about strategies for revenue growth',
+    keywords: ['revenue growth', 'growth strategies', 'increasing revenue']
+  },
+  {
+    id: 'blog-business-strategy',
+    name: 'Business Strategy Articles',
+    path: '/blog?category=Business%20Strategy',
+    description: 'Blog articles about business strategy development',
+    keywords: ['business strategy', 'strategic planning', 'strategic management']
+  },
+  {
+    id: 'blog-marketing-automation',
+    name: 'Marketing Automation Articles',
+    path: '/blog?category=Marketing%20Automation',
+    description: 'Blog articles about marketing automation techniques',
+    keywords: ['marketing automation', 'automated marketing', 'marketing technology']
+  },
+  {
+    id: 'blog-appointment-setting',
+    name: 'Appointment Setting Articles',
+    path: '/blog?category=Appointment%20Setting',
+    description: 'Blog articles about appointment setting automation',
+    keywords: ['appointment setting', 'scheduling automation', 'booking automation']
+  },
+  {
+    id: 'blog-operational-efficiency',
+    name: 'Operational Efficiency Articles',
+    path: '/blog?category=Operational%20Efficiency',
+    description: 'Blog articles about improving operational efficiency',
+    keywords: ['operational efficiency', 'efficiency improvement', 'process optimization']
+  },
+  {
+    id: 'blog-social-media',
+    name: 'Social Media Articles',
+    path: '/blog?category=Social%20Media',
+    description: 'Blog articles about social media strategy and automation',
+    keywords: ['social media', 'social platforms', 'social networking']
+  },
+  {
+    id: 'blog-customer-engagement',
+    name: 'Customer Engagement Articles',
+    path: '/blog?category=Customer%20Engagement',
+    description: 'Blog articles about customer engagement strategies',
+    keywords: ['customer engagement', 'engagement strategies', 'customer interaction']
+  },
+  {
+    id: 'blog-digital-marketing',
+    name: 'Digital Marketing Articles',
+    path: '/blog?category=Digital%20Marketing',
+    description: 'Blog articles about digital marketing strategies',
+    keywords: ['digital marketing', 'online marketing', 'internet marketing']
+  },
+  {
+    id: 'blog-customer-service',
+    name: 'Customer Service Blog Articles',
+    path: '/blog?category=Customer%20Service',
+    description: 'Blog articles about customer service and support automation',
+    keywords: ['customer service blog', 'support articles', 'service automation']
+  },
+  {
+    id: 'anaya-voice-navigation-revolution',
+    name: 'How Anaya is Revolutionizing Website Navigation with Voice AI',
+    path: '/blog/anaya-voice-navigation-revolution',
+    description: 'Blog article about how Anaya is changing website navigation with voice AI',
+    keywords: ['anaya blog', 'voice navigation', 'website experience', 'voice ai navigation']
+  },
+  {
+    id: 'anaya-vs-chatbots',
+    name: 'Beyond Chatbots: Why Anaya WebAgent Outperforms Traditional Solutions',
+    path: '/blog/anaya-vs-chatbots',
+    description: 'Blog article comparing Anaya WebAgent to traditional chatbot solutions',
+    keywords: ['chatbots comparison', 'anaya vs chatbots', 'webagent advantages', 'voice assistant benefits']
+  },
+  {
+    id: 'building-ai-agent-ecosystem-business',
+    name: 'Building Your AI Agent Ecosystem: A Strategic Framework for Business Leaders',
+    path: '/blog/building-ai-agent-ecosystem-business',
+    description: 'Blog article about developing a comprehensive AI agent ecosystem for business transformation',
+    keywords: ['ai ecosystem', 'business strategy', 'agent integration', 'digital transformation']
+  },
+  {
+    id: 'voice-ai-integration-customer-journey',
+    name: 'Voice AI Across the Customer Journey: Creating Seamless Experiences',
+    path: '/blog/voice-ai-integration-customer-journey',
+    description: 'Blog article about integrating voice AI at every stage of the customer journey',
+    keywords: ['voice ai', 'customer journey', 'customer experience', 'voice interface']
+  },
+  {
+    id: 'ai-human-collaboration-business-success',
+    name: 'AI-Human Collaboration: The Key to Business Success',
+    path: '/blog/ai-human-collaboration-business-success',
+    description: 'Blog article about the importance of effective collaboration between AI and human teams',
+    keywords: ['ai collaboration', 'human-ai teamwork', 'business success', 'collaborative intelligence']
+  },
+  {
+    id: 'complete-business-automation-with-ai-agents',
+    name: 'Complete Business Automation with AI Agents',
+    path: '/blog/complete-business-automation-with-ai-agents',
+    description: 'Blog article about using AI agents to automate business processes end-to-end',
+    keywords: ['business automation', 'ai agents', 'process automation', 'workflow optimization']
+  },
+  {
+    id: 'anaya-implementation-guide',
+    name: 'Anaya Implementation Guide: Best Practices for Voice AI Integration',
+    path: '/blog/anaya-implementation-guide',
+    description: 'Blog article providing a detailed guide for implementing Anaya WebAgent',
+    keywords: ['anaya implementation', 'voice ai integration', 'implementation guide', 'best practices']
+  },
+  {
+    id: 'anaya-roi-case-studies',
+    name: 'Anaya ROI Case Studies: Real Business Results from Voice AI',
+    path: '/blog/anaya-roi-case-studies',
+    description: 'Blog article sharing case studies on the return on investment from Anaya WebAgent',
+    keywords: ['anaya roi', 'voice ai results', 'case studies', 'business impact']
+  },
+  {
+    id: 'how-ai-voice-agents-transform-customer-support',
+    name: 'How AI Voice Agents Transform Customer Support',
+    path: '/blog/how-ai-voice-agents-transform-customer-support',
+    description: 'Blog article about the transformation of customer support through AI voice agents',
+    keywords: ['customer support', 'voice agents', 'support transformation', 'ai customer service']
+  },
+  {
+    id: 'ai-sales-agents-revenue-growth',
+    name: 'AI Sales Agents: The Key to Revenue Growth',
+    path: '/blog/ai-sales-agents-revenue-growth',
+    description: 'Blog article about how AI sales agents drive revenue growth for businesses',
+    keywords: ['ai sales', 'revenue growth', 'sales agents', 'business development']
+  },
+  {
+    id: 'lead-generation-ai-strategies',
+    name: 'Lead Generation AI Strategies for Business Growth',
+    path: '/blog/lead-generation-ai-strategies',
+    description: 'Blog article about effective AI strategies for lead generation and business growth',
+    keywords: ['lead generation', 'ai strategies', 'business growth', 'lead qualification']
+  },
+  {
+    id: 'ai-appointment-setting-efficiency',
+    name: 'AI Appointment Setting: Maximizing Operational Efficiency',
+    path: '/blog/ai-appointment-setting-efficiency',
+    description: 'Blog article about using AI to maximize efficiency in appointment setting',
+    keywords: ['appointment setting', 'operational efficiency', 'scheduling automation', 'ai scheduling']
+  },
+  {
+    id: 'social-media-ai-engagement-strategies',
+    name: 'Social Media AI Engagement Strategies for Modern Businesses',
+    path: '/blog/social-media-ai-engagement-strategies',
+    description: 'Blog article about strategies for AI engagement on social media platforms',
+    keywords: ['social media', 'ai engagement', 'social strategy', 'digital marketing']
+  }
+];
+
+// Map of page aliases to handle different ways to reference the same page
+const pageAliases: { [key: string]: string } = {
+  // Product aliases - using correct paths
+  'anaya': '/products/anaya-webAgent',
+  'webagent': '/products/anaya-webAgent',
+  'web agent': '/products/anaya-webAgent',
+  'web assistant': '/products/anaya-webAgent',
+  'website agent': '/products/anaya-webAgent',
+  
+  // Featured articles aliases
+  'featured articles': '/blog?category=Featured',
+  'featured posts': '/blog?category=Featured',
+  'highlighted articles': '/blog?category=Featured',
+  'recommended articles': '/blog?category=Featured',
+  'featured blog': '/blog?category=Featured',
+  'featured content': '/blog?category=Featured',
+  'featured': '/blog?category=Featured',
+  'recommended': '/blog?category=Featured',
+  'best articles': '/blog?category=Featured',
+  'top posts': '/blog?category=Featured',
+  'top articles': '/blog?category=Featured',
+  'highlighted blog': '/blog?category=Featured',
+  'recommended blog posts': '/blog?category=Featured',
+  'recommended reading': '/blog?category=Featured',
+  'best blog posts': '/blog?category=Featured',
+  'featured section': '/blog?category=Featured',
+  'popular articles': '/blog?category=Featured',
+  'popular posts': '/blog?category=Featured',
+  'editor picks': '/blog?category=Featured',
+  'editor\'s choice': '/blog?category=Featured',
+  'trending articles': '/blog?category=Featured',
+  'must read': '/blog?category=Featured',
+  'must-read articles': '/blog?category=Featured',
+  
+  // Anaya Pro and Enterprise aliases
+  'anaya pro': '/products/anaya-webAgent-pro',
+  'anaya-pro': '/products/anaya-webAgent-pro',
+  'anaya-webagent-pro': '/products/anaya-webAgent-pro',
+  'anaya webagent pro': '/products/anaya-webAgent-pro',
+  'premium webagent': '/products/anaya-webAgent-pro',
+  'advanced web assistant': '/products/anaya-webAgent-pro',
+  'professional anaya': '/products/anaya-webAgent-pro',
+  'professional webagent': '/products/anaya-webAgent-pro',
+  'pro webagent': '/products/anaya-webAgent-pro',
+  'anaya enterprise': '/products/anaya-webAgent-enterprise',
+  'anaya-enterprise': '/products/anaya-webAgent-enterprise',
+  'anaya-webagent-enterprise': '/products/anaya-webAgent-enterprise',
+  'anaya webagent enterprise': '/products/anaya-webAgent-enterprise',
+  'enterprise webagent': '/products/anaya-webAgent-enterprise',
+  'corporate web agent': '/products/anaya-webAgent-enterprise',
+  'enterprise anaya': '/products/anaya-webAgent-enterprise',
+  'business webagent': '/products/anaya-webAgent-enterprise',
+  
+  'rocketsingh': '/products/rocketsingh-salesAgent',
+  'rocket singh': '/products/rocketsingh-salesAgent',
+  'sales agent': '/products/rocketsingh-salesAgent',
+  'business growth': '/products/rocketsingh-salesAgent',
+  'sales': '/products/rocketsingh-salesAgent',
+  
+  // RocketSingh SaaS and Commerce aliases
+  'rocketsingh saas': '/products/rocketsingh-salesAgent-saas',
+  'rocketsingh-saas': '/products/rocketsingh-salesAgent-saas',
+  'rocketsingh-salesagent-saas': '/products/rocketsingh-salesAgent-saas',
+  'rocketsingh salesagent saas': '/products/rocketsingh-salesAgent-saas',
+  'rocket singh saas': '/products/rocketsingh-salesAgent-saas',
+  'saas sales agent': '/products/rocketsingh-salesAgent-saas',
+  'software sales': '/products/rocketsingh-salesAgent-saas',
+  'subscription sales': '/products/rocketsingh-salesAgent-saas',
+  'saas rocketsingh': '/products/rocketsingh-salesAgent-saas',
+  'saas rocket singh': '/products/rocketsingh-salesAgent-saas',
+  'rocketsingh commerce': '/products/rocketsingh-salesAgent-ecommerce',
+  'rocketsingh-ecommerce': '/products/rocketsingh-salesAgent-ecommerce',
+  'rocketsingh-salesagent-ecommerce': '/products/rocketsingh-salesAgent-ecommerce',
+  'rocketsingh salesagent ecommerce': '/products/rocketsingh-salesAgent-ecommerce',
+  'rocket singh commerce': '/products/rocketsingh-salesAgent-ecommerce',
+  'ecommerce sales': '/products/rocketsingh-salesAgent-ecommerce',
+  'online sales': '/products/rocketsingh-salesAgent-ecommerce',
+  'e-commerce agent': '/products/rocketsingh-salesAgent-ecommerce',
+  'ecommerce rocketsingh': '/products/rocketsingh-salesAgent-ecommerce',
+  'commerce rocketsingh': '/products/rocketsingh-salesAgent-ecommerce',
+  'ecommerce rocket singh': '/products/rocketsingh-salesAgent-ecommerce',
+  
+  'liya': '/products/liya-appointmentSetter',
+  'appointment setter': '/products/liya-appointmentSetter',
+  'appointment agent': '/products/liya-appointmentSetter',
+  'scheduler': '/products/liya-appointmentSetter',
+  'booking agent': '/products/liya-appointmentSetter',
+  
+  // Liya Medical and Salon aliases
+  'liya medical': '/products/liya-appointmentSetter-medical',
+  'liya-medical': '/products/liya-appointmentSetter-medical',
+  'liya-appointmentsetter-medical': '/products/liya-appointmentSetter-medical',
+  'liya appointmentsetter medical': '/products/liya-appointmentSetter-medical',
+  'healthcare appointment': '/products/liya-appointmentSetter-medical',
+  'medical scheduler': '/products/liya-appointmentSetter-medical',
+  'doctor appointment': '/products/liya-appointmentSetter-medical',
+  'medical liya': '/products/liya-appointmentSetter-medical',
+  'healthcare liya': '/products/liya-appointmentSetter-medical',
+  'medical appointment agent': '/products/liya-appointmentSetter-medical',
+  'liya salon': '/products/liya-appointmentSetter-salon',
+  'liya-salon': '/products/liya-appointmentSetter-salon',
+  'liya-appointmentsetter-salon': '/products/liya-appointmentSetter-salon',
+  'liya appointmentsetter salon': '/products/liya-appointmentSetter-salon',
+  'beauty appointment': '/products/liya-appointmentSetter-salon',
+  'salon scheduler': '/products/liya-appointmentSetter-salon',
+  'spa booking': '/products/liya-appointmentSetter-salon',
+  'salon liya': '/products/liya-appointmentSetter-salon',
+  'beauty liya': '/products/liya-appointmentSetter-salon',
+  'spa appointment agent': '/products/liya-appointmentSetter-salon',
+  'salon appointment agent': '/products/liya-appointmentSetter-salon',
+  
+  'ahana': '/products/ahana-socialMediaAgent',
+  'social media agent': '/products/ahana-socialMediaAgent',
+  'social media support': '/products/ahana-socialMediaAgent',
+  'messaging agent': '/products/ahana-socialMediaAgent',
+  'juliya': '/products/ahana-socialMediaAgent', // Alternative spelling
+  
+  // Ahana Content and Support aliases
+  'ahana content': '/products/ahana-socialMediaAgent-content',
+  'ahana-content': '/products/ahana-socialMediaAgent-content',
+  'ahana-socialmediaagent-content': '/products/ahana-socialMediaAgent-content',
+  'ahana socialmediaagent content': '/products/ahana-socialMediaAgent-content',
+  'content marketing': '/products/ahana-socialMediaAgent-content',
+  'social content': '/products/ahana-socialMediaAgent-content',
+  'audience engagement': '/products/ahana-socialMediaAgent-content',
+  'content ahana': '/products/ahana-socialMediaAgent-content',
+  'content social agent': '/products/ahana-socialMediaAgent-content',
+  'content social media agent': '/products/ahana-socialMediaAgent-content',
+  'ahana support': '/products/ahana-socialMediaAgent-support',
+  'ahana-support': '/products/ahana-socialMediaAgent-support',
+  'ahana-socialmediaagent-support': '/products/ahana-socialMediaAgent-support',
+  'ahana socialmediaagent support': '/products/ahana-socialMediaAgent-support',
+  'social support': '/products/ahana-socialMediaAgent-support',
+  'customer service agent': '/products/ahana-socialMediaAgent-support',
+  'support agent': '/products/ahana-socialMediaAgent-support',
+  'support ahana': '/products/ahana-socialMediaAgent-support',
+  'customer support agent': '/products/ahana-socialMediaAgent-support',
+  
+  // Sam aliases
+  'sam': '/products/sam-leadGenAgent',
+  'lead generation': '/products/sam-leadGenAgent',
+  'lead gen': '/products/sam-leadGenAgent',
+  'lead generation agent': '/products/sam-leadGenAgent',
+  'lead gen agent': '/products/sam-leadGenAgent',
+  
+  // Sam B2B and Realty aliases
+  'sam b2b': '/products/sam-leadGenAgent-b2b',
+  'sam-b2b': '/products/sam-leadGenAgent-b2b',
+  'sam-leadgenagent-b2b': '/products/sam-leadGenAgent-b2b',
+  'sam leadgenagent b2b': '/products/sam-leadGenAgent-b2b',
+  'b2b leads': '/products/sam-leadGenAgent-b2b',
+  'business leads': '/products/sam-leadGenAgent-b2b',
+  'account-based marketing': '/products/sam-leadGenAgent-b2b',
+  'b2b sam': '/products/sam-leadGenAgent-b2b',
+  'b2b lead generation': '/products/sam-leadGenAgent-b2b',
+  'business to business lead generation': '/products/sam-leadGenAgent-b2b',
+  'business to business leads': '/products/sam-leadGenAgent-b2b',
+  'sam realty': '/products/sam-leadGenAgent-realestate',
+  'sam-realestate': '/products/sam-leadGenAgent-realestate',
+  'sam-leadgenagent-realestate': '/products/sam-leadGenAgent-realestate',
+  'sam leadgenagent realestate': '/products/sam-leadGenAgent-realestate',
+  'sam real estate': '/products/sam-leadGenAgent-realestate',
+  'real estate leads': '/products/sam-leadGenAgent-realestate',
+  'property leads': '/products/sam-leadGenAgent-realestate',
+  'real estate marketing': '/products/sam-leadGenAgent-realestate',
+  'realty sam': '/products/sam-leadGenAgent-realestate',
+  'real estate sam': '/products/sam-leadGenAgent-realestate',
+  'real estate lead generation': '/products/sam-leadGenAgent-realestate',
+  
+  // Other aliases
+  'home': '/',
+  'main': '/',
+  'landing': '/',
+  
+  'products': '/products',
+  'agents': '/products',
+  'our agents': '/products',
+  'agent catalog': '/products',
+  
+  'services': '/services',
+  'our services': '/services',
+  'automation services': '/services',
+  
+  'about': '/about',
+  'about us': '/about',
+  'company': '/about',
+  'team': '/about',
+  
+  'contact': '/contact',
+  'contact us': '/contact',
+  'get in touch': '/contact',
+  'book a call': '/contact',
+  'book a demo': '/contact',
+  'schedule a call': '/contact',
+  'schedule a demo': '/contact',
+  'talk to us': '/contact',
+  
+  // Blog aliases
+  'blog': '/blog',
+  'articles': '/blog',
+  'blog posts': '/blog',
+  'insights': '/blog',
+  'news': '/blog',
+  
+  // Add synchronization with prompt template paths
+  // These are the simple paths used in the prompt templates that need to map to the actual product pages
+  '/products/anaya': '/products/anaya-webAgent',
+  '/products/rocketsingh': '/products/rocketsingh-salesAgent',
+  '/products/liya': '/products/liya-appointmentSetter',
+  '/products/sam': '/products/sam-leadGenAgent',
+  '/products/ahana': '/products/ahana-socialMediaAgent',
+  
+  // Simple product names to full paths for handling simple agent names
+  'anaya-webagent': '/products/anaya-webAgent',
+  'rocketsingh-salesagent': '/products/rocketsingh-salesAgent',
+  'liya-appointmentsetter': '/products/liya-appointmentSetter',
+  'sam-leadgenagent': '/products/sam-leadGenAgent',
+  'ahana-socialmediaagent': '/products/ahana-socialMediaAgent',
+  
+  // Blog category aliases
+  'ai blog': '/blog?category=AI',
+  // ... rest of existing blog category aliases ...
+
+  // Homepage section anchors
+  'transform your website': '/#transform-your-website',
+  'transform your website with anaya': '/#transform-your-website',
+  'see anaya in action': '/#anaya-in-action',
+  'anaya in action': '/#anaya-in-action',
+  'website transformation': '/#transform-your-website',
+  'voice integration': '/#transform-your-website',
+  'use cases': '/#anaya-in-action',
+  'industry examples': '/#anaya-in-action',
+  'showcases': '/#anaya-in-action',
+  'examples': '/#anaya-in-action',
+  'demos': '/#anaya-in-action',
+};
+
+/**
+ * Parse a route string and resolve it to a valid path
+ * This enables the agent to handle variations in how routes are specified
+ */
+export const parseRoute = (routeInput: string, depth: number = 0): string => {
+  // Prevent infinite recursion
+  if (depth > 1) {
+    console.log(`NavigationTool: Maximum recursion depth reached, stopping further processing`);
+    return routeInput;
+  }
+
+  // Add string similarity function for improved matching
+  const calculateStringSimilarity = (str1: string, str2: string): number => {
+    // Simple word-level similarity calculation
+    const words1 = str1.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+    const words2 = str2.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+    
+    let matchCount = 0;
+    for (const word1 of words1) {
+      if (words2.some(word2 => word2.includes(word1) || word1.includes(word2))) {
+        matchCount++;
+      }
+    }
+    
+    return words1.length > 0 ? matchCount / words1.length : 0;
+  };
+
+  // Add a function to check if a route might be a blog article request even without mentioning "blog" or "article"
+  // Add this after calculateStringSimilarity function
+  const mightBeBlogRequest = (route: string): boolean => {
+    // These topic words suggest the user might be asking about content typically found in blogs
+    const blogTopicWords = [
+      'automation', 'ai', 'voice', 'integration', 'collaboration', 'strategy', 
+      'implementation', 'transformation', 'customer journey', 'guide', 'case studies',
+      'support', 'revenue', 'lead generation', 'appointment', 'social media',
+      'business', 'ecosystem', 'framework', 'chatbots', 'navigation', 'revolution'
+    ];
+    
+    // Check if the route contains any blog topic words
+    return blogTopicWords.some(topic => route.includes(topic));
+  };
+
+  // Clean up the route
+  const cleanRoute = routeInput.trim().toLowerCase();
+  
+  console.log(`NavigationTool: Parsing route: ${cleanRoute}`);
+  
+  // Check for exact matches in pageAliases first (includes the prompt template mappings)
+  if (pageAliases[cleanRoute]) {
+    console.log(`NavigationTool: Found exact match in aliases: ${cleanRoute} -> ${pageAliases[cleanRoute]}`);
+    return pageAliases[cleanRoute];
+  }
+  
+  // Special handling for simple product routes from the prompt template
+  // These are in the format /products/anaya but need to map to /products/anaya-webAgent
+  if (cleanRoute.startsWith('/products/')) {
+    const productName = cleanRoute.split('/')[2]; // Extract the product name after /products/
+    
+    // Map simple product names to their full paths
+    const productNameToFullPath: {[key: string]: string} = {
+      'anaya': '/products/anaya-webAgent',
+      'rocketsingh': '/products/rocketsingh-salesAgent', 
+      'liya': '/products/liya-appointmentSetter',
+      'sam': '/products/sam-leadGenAgent',
+      'ahana': '/products/ahana-socialMediaAgent'
+    };
+    
+    if (productNameToFullPath[productName]) {
+      console.log(`NavigationTool: Mapped simple product path to full path: ${cleanRoute} -> ${productNameToFullPath[productName]}`);
+      return productNameToFullPath[productName];
+    }
+  }
+  
+  // Map full agent IDs to their simple routes
+  // This handles cases where the agent ID is passed directly (e.g., anaya-webAgent-pro)
+  const agentIdToRouteMap: {[key: string]: string} = {
+    'anaya-webagent-pro': '/products/anaya-webAgent-pro',
+    'anaya-webagent-enterprise': '/products/anaya-webAgent-enterprise',
+    'rocketsingh-salesagent-saas': '/products/rocketsingh-salesAgent-saas',
+    'rocketsingh-salesagent-ecommerce': '/products/rocketsingh-salesAgent-ecommerce',
+    'sam-leadgenagent-b2b': '/products/sam-leadGenAgent-b2b',
+    'sam-leadgenagent-realestate': '/products/sam-leadGenAgent-realestate',
+    'liya-appointmentsetter-medical': '/products/liya-appointmentSetter-medical',
+    'liya-appointmentsetter-salon': '/products/liya-appointmentSetter-salon',
+    'ahana-socialmediaagent-content': '/products/ahana-socialMediaAgent-content',
+    'ahana-socialmediaagent-support': '/products/ahana-socialMediaAgent-support',
+    // Add base agent IDs for direct mapping
+    'anaya-webagent': '/products/anaya-webAgent',
+    'rocketsingh-salesagent': '/products/rocketsingh-salesAgent',
+    'liya-appointmentsetter': '/products/liya-appointmentSetter',
+    'sam-leadgenagent': '/products/sam-leadGenAgent',
+    'ahana-socialmediaagent': '/products/ahana-socialMediaAgent'
+  };
+  
+  // The availablePages array contains all site pages including blog articles
+  // Rather than maintaining a separate static mapping for blog slugs (which can get out of sync),
+  // we dynamically build the blogSlugToRouteMap from availablePages to ensure:
+  // 1. All blog articles are included automatically
+  // 2. Changes to availablePages automatically update this mapping
+  // 3. Both slug and ID-based lookups are supported
+  // This unifies our approach for both products and blogs through a consistent data source
+  const blogSlugToRouteMap: {[key: string]: string} = {};
+  
+  // Populate the blogSlugToRouteMap from availablePages
+  // This ensures all blog articles are included automatically
+  availablePages.forEach(page => {
+    // Check if this is a blog detail page (not category)
+    if (page.path.startsWith('/blog/')) {
+      // Extract the slug from the path
+      const slug = page.path.replace('/blog/', '');
+      
+      // Add the mapping
+      blogSlugToRouteMap[slug] = page.path;
+      
+      // Also add the mapping by ID to catch more references
+      if (page.id) {
+        blogSlugToRouteMap[page.id] = page.path;
+      }
+    }
+  });
+  
+  // Log the number of blog entries for debugging
+  console.log(`NavigationTool: Initialized with ${Object.keys(blogSlugToRouteMap).length} blog slug mappings`);
+  // DEBUG: Log all blog slugs for debugging
+  console.log('NavigationTool: Available blog slugs:');
+  Object.keys(blogSlugToRouteMap).forEach(slug => {
+    console.log(`  - ${slug} -> ${blogSlugToRouteMap[slug]}`);
+  });
+  
+  // Check for exact matches in the agent ID map (handles full IDs like anaya-webAgent-pro)
+  for (const [agentId, routePath] of Object.entries(agentIdToRouteMap)) {
+    if (cleanRoute.includes(agentId)) {
+      console.log(`NavigationTool: Matched agent ID ${agentId} to route ${routePath}`);
+      return routePath;
+    }
+  }
+  
+  // Check for exact matches in the blog slug map (handles blog detail pages)
+  for (const [blogSlug, routePath] of Object.entries(blogSlugToRouteMap)) {
+    if (cleanRoute.includes(blogSlug)) {
+      console.log(`NavigationTool: Matched blog slug ${blogSlug} to route ${routePath}`);
+      return routePath;
+    }
+  }
+  
+  // Direct path matching (if it starts with a slash)
+  if (cleanRoute.startsWith('/')) {
+    // Check if it's a direct match to an available page
+    const directMatch = availablePages.find(page => 
+      page.path.toLowerCase() === cleanRoute
+    );
+    
+    if (directMatch) {
+      console.log(`NavigationTool: Direct path match found for ${cleanRoute}`);
+      return directMatch.path;
+    }
+    
+    // Special handling for product variations
+    const variationKeywords = [
+      '-pro', '-enterprise', '-saas', '-ecommerce', '-medical', 
+      '-salon', '-content', '-support', '-b2b', '-realestate'
+    ];
+    
+    if (variationKeywords.some(keyword => cleanRoute.includes(keyword))) {
+      console.log(`NavigationTool: Product variation path detected: ${cleanRoute}`);
+      
+      // Extract the base product and variation
+      const pathParts = cleanRoute.split('/');
+      const productVariation = pathParts[pathParts.length - 1];
+      
+      // Find exact match based on id
+      const variationMatch = availablePages.find(page => 
+        page.id === productVariation || 
+        page.path.toLowerCase().endsWith(productVariation)
+      );
+      
+      if (variationMatch) {
+        console.log(`NavigationTool: Exact variation match found - ${cleanRoute} -> ${variationMatch.path}`);
+        return variationMatch.path;
+      }
+      
+      // Try to extract the base name and variation from the route
+      const routeParts = productVariation.split('-');
+      if (routeParts.length >= 2) {
+        const baseName = routeParts[0];
+        const variation = routeParts[2];
+        
+        // Check if this is a simple product name that needs proper role suffix
+        // Map simple product names to their full versions with roles
+        const productRoleMap: {[key: string]: string} = {
+          'anaya': 'anaya-webAgent',
+          'rocketsingh': 'rocketsingh-salesAgent',
+          'sam': 'sam-leadGenAgent',
+          'liya': 'liya-appointmentSetter',
+          'ahana': 'ahana-socialMediaAgent'
+        };
+        
+        const baseNameWithRole = productRoleMap[baseName] || baseName;
+        
+        // Construct a path with the proper role included
+        const fullPath = `/products/${baseNameWithRole}-${variation}`;
+        console.log(`NavigationTool: Constructed full path with role: ${fullPath}`);
+        
+        // Check if this path matches any pages
+        const fullMatch = availablePages.find(page => 
+          page.path.toLowerCase() === fullPath.toLowerCase()
+        );
+        
+        if (fullMatch) {
+          console.log(`NavigationTool: Found match for full path: ${fullPath}`);
+          return fullMatch.path;
+        }
+        
+        // Return the constructed path with proper role
+        if (baseNameWithRole && variation) {
+          return fullPath;
+        }
+      }
+    }
+    
+    // Check for partial matches (e.g., /product instead of /products)
+    const partialMatch = availablePages.find(page => 
+      cleanRoute.includes(page.path.toLowerCase()) || 
+      page.path.toLowerCase().includes(cleanRoute)
+    );
+    
+    if (partialMatch) {
+      console.log(`NavigationTool: Partial path match found - ${cleanRoute} -> ${partialMatch.path}`);
+      return partialMatch.path;
+    }
+    
+    // If no exact or partial match but starts with a slash, use as is
+    return cleanRoute;
+  }
+  
+  // Special handling for simple agent names (without the role)
+  const simpleAgentNames = ['anaya', 'rocketsingh', 'liya', 'sam', 'ahana'];
+  for (const agentName of simpleAgentNames) {
+    if (cleanRoute === agentName || cleanRoute.startsWith(agentName + ' ')) {
+      const baseProductPath = {
+        'anaya': '/products/anaya-webAgent',
+        'rocketsingh': '/products/rocketsingh-salesAgent',
+        'liya': '/products/liya-appointmentSetter',
+        'sam': '/products/sam-leadGenAgent',
+        'ahana': '/products/ahana-socialMediaAgent'
+      }[agentName];
+      
+      if (baseProductPath) {
+        console.log(`NavigationTool: Matched simple agent name: ${cleanRoute} -> ${baseProductPath}`);
+        return baseProductPath;
+      }
+    }
+  }
+  
+  // Handle product variations in natural language
+  const variationKeywords = [
+    'pro', 'enterprise', 'saas', 'ecommerce', 'medical', 
+    'salon', 'content', 'support', 'b2b', 'realestate', 'realty'
+  ];
+  
+  // Check if the input contains both a product name and a variation keyword
+  for (const baseProduct of ['anaya', 'rocketsingh', 'rocket singh', 'sam', 'liya', 'ahana']) {
+    if (cleanRoute.includes(baseProduct)) {
+      for (const variation of variationKeywords) {
+        if (cleanRoute.includes(variation)) {
+          // Map base product to full name with role
+          const baseProductWithRole = {
+            'anaya': 'anaya-webAgent',
+            'rocketsingh': 'rocketsingh-salesAgent',
+            'rocket singh': 'rocketsingh-salesAgent',
+            'sam': 'sam-leadGenAgent',
+            'liya': 'liya-appointmentSetter', 
+            'ahana': 'ahana-socialMediaAgent'
+          }[baseProduct] || baseProduct;
+          
+          // Form a product variation path with the proper role
+          const possiblePath = `/products/${baseProductWithRole}-${variation}`;
+          
+          console.log(`NavigationTool: Checking for product variation match with full path: ${possiblePath}`);
+          
+          // Look for matching pages
+          const variationPage = availablePages.find(page => 
+            page.path === possiblePath || page.path.toLowerCase() === possiblePath.toLowerCase()
+          );
+          
+          if (variationPage) {
+            console.log(`NavigationTool: Product variation match found - ${cleanRoute} -> ${variationPage.path}`);
+            return variationPage.path;
+          }
+          
+          // If no exact match found, but we have a valid base product and variation,
+          // return the constructed path with proper role
+          console.log(`NavigationTool: No exact match, returning constructed path: ${possiblePath}`);
+          return possiblePath;
+        }
+      }
+    }
+  }
+  
+  // Enhanced special handling for variants
+  if (cleanRoute.includes('premium') || cleanRoute.includes('advance') || cleanRoute.includes('pro')) {
+    console.log(`NavigationTool: Pro variant keyword detected, checking for appropriate product`);
+    
+    for (const baseProduct of ['anaya', 'rocketsingh', 'rocket singh', 'sam', 'liya', 'ahana']) {
+      if (cleanRoute.includes(baseProduct)) {
+        // Map to full product names with roles
+        const productMap: {[key: string]: string} = {
+          'anaya': 'anaya-webAgent-pro',
+          'rocketsingh': 'rocketsingh-salesAgent-pro',
+          'rocket singh': 'rocketsingh-salesAgent-pro',
+          'sam': 'sam-leadGenAgent-pro',
+          'liya': 'liya-appointmentSetter-pro',
+          'ahana': 'ahana-socialMediaAgent-pro'
+        };
+        
+        const fullProductPath = productMap[baseProduct];
+        if (fullProductPath) {
+          const proVariant = `/products/${fullProductPath}`;
+          console.log(`NavigationTool: Mapped to pro variant with full path: ${proVariant}`);
+        return proVariant;
+        }
+      }
+    }
+  }
+  
+  if (cleanRoute.includes('enterprise') || cleanRoute.includes('corporate') || cleanRoute.includes('business')) {
+    console.log(`NavigationTool: Enterprise variant keyword detected, checking for appropriate product`);
+    
+    for (const baseProduct of ['anaya', 'rocketsingh', 'rocket singh', 'sam', 'liya', 'ahana']) {
+      if (cleanRoute.includes(baseProduct)) {
+        // Map to full product names with roles
+        const productMap: {[key: string]: string} = {
+          'anaya': 'anaya-webAgent-enterprise',
+          'rocketsingh': 'rocketsingh-salesAgent-enterprise',
+          'rocket singh': 'rocketsingh-salesAgent-enterprise',
+          'sam': 'sam-leadGenAgent-enterprise',
+          'liya': 'liya-appointmentSetter-enterprise',
+          'ahana': 'ahana-socialMediaAgent-enterprise'
+        };
+        
+        const fullProductPath = productMap[baseProduct];
+        if (fullProductPath) {
+          const enterpriseVariant = `/products/${fullProductPath}`;
+          console.log(`NavigationTool: Mapped to enterprise variant with full path: ${enterpriseVariant}`);
+        return enterpriseVariant;
+        }
+      }
+    }
+  }
+  
+  // Special handling for industry and use case selection
+  if (cleanRoute.includes('industry') || cleanRoute.includes('usecase')) {
+    const industryMap: {[key: string]: number} = {
+      'ecommerce': 0,
+      'e-commerce': 0,
+      'restaurant': 1,
+      'restaurants': 1,
+      'hotel': 2,
+      'hotels': 2,
+      'blog': 3,
+      'blogs': 3,
+      'media': 3,
+      'saas': 4,
+      'software': 4
+    };
+    
+    const useCaseMap: {[key: string]: number} = {
+      'product search': 0,
+      'search': 0,
+      'recommendation': 1,
+      'recommendations': 1,
+      'product recommendation': 1,
+      'product recommendations': 1,
+      'customer engagement': 2,
+      'engagement': 2,
+      'lead capture': 3,
+      'capture': 3,
+      'support': 4,
+      'support connection': 4,
+      'connection': 4
+    };
+    
+    let industryFound = false;
+    let useCaseFound = false;
+    let industryIndex = -1;
+    let useCaseIndex = -1;
+    
+    // Look for industry mentions
+    for (const key of Object.keys(industryMap)) {
+      if (cleanRoute.includes(key)) {
+        industryFound = true;
+        industryIndex = industryMap[key];
+        break;
+      }
+    }
+    
+    // Look for use case mentions
+    for (const key of Object.keys(useCaseMap)) {
+      if (cleanRoute.includes(key)) {
+        useCaseFound = true;
+        useCaseIndex = useCaseMap[key];
+        break;
+      }
+    }
+    
+    // If we found an industry or use case to select, keep the original route
+    // We'll dispatch events in the execute function
+    if (industryFound || useCaseFound) {
+      console.log(`NavigationTool: Found industry=${industryFound ? industryIndex : 'none'}, useCase=${useCaseFound ? useCaseIndex : 'none'} in route`);
+      // Note: We're intentionally returning the original route here
+      // The actual selection will be handled in the execute function
+      return '/#anaya-in-action';
+    }
+  }
+  
+  // Special handling for industry-specific variants
+  if (cleanRoute.includes('saas') || cleanRoute.includes('software')) {
+    for (const baseProduct of ['anaya', 'rocketsingh', 'rocket singh']) {
+      if (cleanRoute.includes(baseProduct)) {
+        // Use product-specific formatting with full paths
+        if (baseProduct === 'anaya') {
+          return `/products/anaya-webAgent-saas`;
+        } else {
+          return `/products/rocketsingh-salesAgent-saas`;
+        }
+      }
+    }
+  }
+  
+  if (cleanRoute.includes('ecommerce') || cleanRoute.includes('commerce') || cleanRoute.includes('online sales')) {
+    for (const baseProduct of ['anaya', 'rocketsingh', 'rocket singh']) {
+      if (cleanRoute.includes(baseProduct)) {
+        // Use product-specific formatting with full paths
+        if (baseProduct === 'anaya') {
+          return `/products/anaya-webAgent-ecommerce`;
+        } else {
+          return `/products/rocketsingh-salesAgent-ecommerce`;
+        }
+      }
+    }
+  }
+  
+  if (cleanRoute.includes('medical') || cleanRoute.includes('healthcare') || cleanRoute.includes('doctor')) {
+    if (cleanRoute.includes('liya')) {
+      return `/products/liya-appointmentSetter-medical`;
+    }
+  }
+  
+  if (cleanRoute.includes('salon') || cleanRoute.includes('beauty') || cleanRoute.includes('spa')) {
+    if (cleanRoute.includes('liya')) {
+      return `/products/liya-appointmentSetter-salon`;
+    }
+  }
+  
+  if (cleanRoute.includes('content') || cleanRoute.includes('curation') || cleanRoute.includes('audience')) {
+    if (cleanRoute.includes('ahana')) {
+      return `/products/ahana-socialMediaAgent-content`;
+    }
+  }
+  
+  if (cleanRoute.includes('support') || cleanRoute.includes('customer service')) {
+    if (cleanRoute.includes('ahana')) {
+      return `/products/ahana-socialMediaAgent-support`;
+    }
+  }
+  
+  if (cleanRoute.includes('b2b') || cleanRoute.includes('business to business')) {
+    if (cleanRoute.includes('sam')) {
+      return `/products/sam-leadGenAgent-b2b`;
+    }
+  }
+  
+  if (cleanRoute.includes('realty') || cleanRoute.includes('real estate') || cleanRoute.includes('property')) {
+    if (cleanRoute.includes('sam')) {
+      return `/products/sam-leadGenAgent-realestate`;
+    }
+  }
+  
+  // Check for direct aliases
+  if (pageAliases[cleanRoute]) {
+    console.log(`NavigationTool: Alias match found - ${cleanRoute} -> ${pageAliases[cleanRoute]}`);
+    return pageAliases[cleanRoute];
+  }
+  
+  // More aggressive partial matching for aliases
+  for (const [alias, path] of Object.entries(pageAliases)) {
+    if (cleanRoute.includes(alias) || alias.includes(cleanRoute)) {
+      console.log(`NavigationTool: Partial alias match found - ${cleanRoute} -> ${path}`);
+      return path;
+    }
+  }
+  
+  // Check for keyword matches in available pages
+  for (const page of availablePages) {
+    // Check if the route contains the page name or any of its keywords
+    if (
+      cleanRoute.includes(page.id.toLowerCase()) || 
+      cleanRoute.includes(page.name.toLowerCase()) ||
+      (page.keywords && page.keywords.some(keyword => 
+        cleanRoute.includes(keyword.toLowerCase()) || keyword.toLowerCase().includes(cleanRoute)
+      ))
+    ) {
+      console.log(`NavigationTool: Keyword match found - ${cleanRoute} -> ${page.path}`);
+      return page.path;
+    }
+  }
+  
+  // Fallback: check if it contains product names without the /products prefix
+  for (const page of availablePages) {
+    if (page.path.startsWith('/products/') && cleanRoute.includes(page.id.toLowerCase())) {
+      console.log(`NavigationTool: Product name match found - ${cleanRoute} -> ${page.path}`);
+      return page.path;
+    }
+  }
+  
+  // Last resort: if it mentions products, go to products page
+  if (cleanRoute.includes('product') || cleanRoute.includes('agent')) {
+    console.log(`NavigationTool: Generic products reference found, defaulting to /products`);
+    return '/products';
+  }
+  
+  // Handle blog article requests
+  // This section enables natural language understanding for blog article references
+  // Uses the comprehensive availablePages data to find the most relevant article
+  if (cleanRoute.includes('blog') || cleanRoute.includes('article')) {
+    console.log(`NavigationTool: Blog or article keyword detected, checking for specific article: "${cleanRoute}"`);
+    
+    // Extract key parts from the route to match blog slugs
+    const blogKeywords = cleanRoute
+      .replace(/blog|article|post|read|about/gi, '')
+      .trim()
+      .toLowerCase();
+    
+    console.log(`NavigationTool: Extracted blog keywords: "${blogKeywords}"`);
+    
+    // First, try direct slug match from our map
+    for (const [blogSlug, routePath] of Object.entries(blogSlugToRouteMap)) {
+      if (blogKeywords.includes(blogSlug)) {
+        console.log(`NavigationTool: Direct blog slug match (keywords include slug): ${blogKeywords} -> ${blogSlug}`);
+        return routePath;
+      }
+      
+      if (blogSlug.includes(blogKeywords) && blogKeywords.length > 3) {
+        console.log(`NavigationTool: Partial blog slug match (slug includes keywords): ${blogKeywords} -> ${blogSlug}`);
+        return routePath;
+      }
+    }
+    
+    // If no direct match, try more comprehensive matching using availablePages and keywords
+    const blogPages = availablePages.filter(page => page.path.startsWith('/blog/'));
+    console.log(`NavigationTool: Checking ${blogPages.length} blog detail pages for matches`);
+    
+    // Try to match using keywords first (most accurate)
+    const keywordMatch = blogPages.find(page => 
+      page.keywords && page.keywords.some(keyword => 
+        blogKeywords.includes(keyword.toLowerCase()) || 
+        keyword.toLowerCase().includes(blogKeywords)
+      )
+    );
+    
+    if (keywordMatch) {
+      console.log(`NavigationTool: Matched blog by keywords: ${blogKeywords} -> ${keywordMatch.path}`);
+      return keywordMatch.path;
+    }
+    
+    // Try to match by name
+    const nameMatch = blogPages.find(page => 
+      page.name.toLowerCase().includes(blogKeywords) || 
+      blogKeywords.includes(page.name.toLowerCase())
+    );
+    
+    if (nameMatch) {
+      console.log(`NavigationTool: Matched blog by name: ${blogKeywords} -> ${nameMatch.path}`);
+      return nameMatch.path;
+    }
+    
+    // Try multi-word matching
+    const blogKeywordParts = blogKeywords.split(/\s+/).filter(part => part.length > 3);
+    if (blogKeywordParts.length >= 2) {
+      // Count matches for each page
+      const matchCounts = blogPages.map(page => {
+        let count = 0;
+        const pageText = [
+          page.name.toLowerCase(),
+          page.description.toLowerCase(),
+          ...(page.keywords || []).map(k => k.toLowerCase())
+        ].join(' ');
+        
+        for (const part of blogKeywordParts) {
+          if (pageText.includes(part)) {
+            count++;
+          }
+        }
+        
+        // Calculate title similarity for better matching
+        const titleSimilarity = calculateStringSimilarity(blogKeywords, page.name);
+        if (titleSimilarity > 0.5) {
+          count += 2; // Give extra weight to title similarity
+          console.log(`NavigationTool: High title similarity (${titleSimilarity.toFixed(2)}) for "${page.name}"`);
+        }
+        
+        return { page, count, titleSimilarity };
+      });
+      
+      // Sort by match count, descending, then by title similarity as a tiebreaker
+      matchCounts.sort((a, b) => 
+        b.count !== a.count 
+          ? b.count - a.count 
+          : b.titleSimilarity - a.titleSimilarity
+      );
+      
+      // If we have a good match (at least 2 keywords or high title similarity)
+      if (matchCounts.length > 0 && (matchCounts[0].count >= 2 || matchCounts[0].titleSimilarity > 0.6)) {
+        console.log(`NavigationTool: Matched blog by multiple factors: ${blogKeywords} -> ${matchCounts[0].page.path} (score: ${matchCounts[0].count}, similarity: ${matchCounts[0].titleSimilarity.toFixed(2)})`);
+        return matchCounts[0].page.path;
+      }
+    }
+    
+    // If still no match but request is for blog, return general blog page
+    if (cleanRoute.includes('blog') && !cleanRoute.includes('category')) {
+      console.log(`NavigationTool: General blog request detected, returning main blog page`);
+      return '/blog';
+    }
+  }
+  
+  // Add this check before the final "if all else fails" section, around line 1280
+  // Check if this might be a blog request even without explicitly saying "blog" or "article"
+  if (mightBeBlogRequest(cleanRoute)) {
+    console.log(`NavigationTool: Potential implicit blog request detected: "${cleanRoute}"`);
+    
+    // Create artificial blog request by adding "article about" to the route
+    const artificialBlogRequest = `article about ${cleanRoute}`;
+    console.log(`NavigationTool: Trying with artificial blog request: "${artificialBlogRequest}"`);
+    
+    // Recursively call parseRoute with the artificial blog request
+    const blogResult = parseRoute(artificialBlogRequest, depth + 1);
+    
+    // If this returned a blog path and not just the original input, use it
+    if (blogResult.startsWith('/blog/')) {
+      console.log(`NavigationTool: Successfully matched implicit blog request to: ${blogResult}`);
+      return blogResult;
+    }
+  }
+  
+  // If all else fails, return the original input
+  console.log(`NavigationTool: No match found, using original input: ${routeInput}`);
+  return routeInput;
+};
+
+// Add a fallback function to click on industry and use case tabs directly
+const clickTabDirectly = (type: 'industry' | 'use-case', index: number, retryCount = 0) => {
+  console.log(`NavigationTool: Attempting to directly click ${type} tab at index ${index}`);
+  
+  if (retryCount > 5) {
+    console.error(`NavigationTool: Failed to click ${type} tab after multiple attempts`);
+    return;
+  }
+  
+  // First try using the direct state manipulation functions
+  try {
+    if (typeof window !== 'undefined') {
+      if (type === 'industry' && (window as any).anayaSetActiveIndustry) {
+        console.log(`NavigationTool: Using direct state manipulation for industry ${index}`);
+        const result = (window as any).anayaSetActiveIndustry(index);
+        if (result) {
+          console.log(`NavigationTool: Successfully set industry via direct method`);
+          return; // Exit early if successful
+        }
+      } else if (type === 'use-case' && (window as any).anayaSetActiveUseCase) {
+        console.log(`NavigationTool: Using direct state manipulation for use case ${index}`);
+        const result = (window as any).anayaSetActiveUseCase(index);
+        if (result) {
+          console.log(`NavigationTool: Successfully set use case via direct method`);
+          return; // Exit early if successful
+        }
+      }
+    }
+  } catch (err) {
+    console.error(`NavigationTool: Direct state manipulation failed:`, err);
+    // Continue to DOM click method
+  }
+  
+  // Fallback to DOM click method
+  try {
+    // Find the tab elements based on their structure in page.tsx
+    let tabElement: HTMLElement | null = null;
+    
+    if (type === 'industry') {
+      // Try to find by data attribute first
+      tabElement = document.querySelector(`button[data-industry-index="${index}"]`) as HTMLElement;
+      
+      // Fallback to class-based selector if data attribute not found
+      if (!tabElement) {
+        const industryTabs = document.querySelectorAll('.bg-slate-900\\/60.backdrop-blur-sm.rounded-xl button');
+        if (industryTabs && industryTabs.length > index) {
+          tabElement = industryTabs[index] as HTMLElement;
+        }
+      }
+    } else {
+      // Try to find by data attribute first
+      tabElement = document.querySelector(`button[data-use-case-index="${index}"]`) as HTMLElement;
+      
+      // Fallback to class-based selector if data attribute not found
+      if (!tabElement) {
+        const useCaseTabs = document.querySelectorAll('.grid.grid-cols-5.border-b.border-slate-700\\/50 button');
+        if (useCaseTabs && useCaseTabs.length > index) {
+          tabElement = useCaseTabs[index] as HTMLElement;
+        }
+      }
+    }
+    
+    if (tabElement) {
+      console.log(`NavigationTool: Found ${type} tab element, clicking it`);
+      tabElement.click();
+    } else {
+      // If element not found, retry after a delay
+      console.log(`NavigationTool: ${type} tab element not found, retrying...`);
+      setTimeout(() => clickTabDirectly(type, index, retryCount + 1), 300);
+    }
+  } catch (err) {
+    console.error(`NavigationTool: Error clicking ${type} tab:`, err);
+    // Retry after a delay
+    setTimeout(() => clickTabDirectly(type, index, retryCount + 1), 300);
+  }
+};
+
+// Helper function to scroll to section by ID
+const scrollToSection = (sectionId: string): void => {
+  try {
+    console.log(`NavigationTool: Attempting to scroll to section: ${sectionId}`);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      console.log(`NavigationTool: Found section element, scrolling into view`);
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      console.error(`NavigationTool: Could not find section element with id "${sectionId}"`);
+    }
+  } catch (err) {
+    console.error(`NavigationTool: Error scrolling to section:`, err);
+  }
+};
+
+// Define the arguments for the tool
+interface NavigationArgs {
+  action: 'list' | 'navigate';
+  pageId?: string;
+}
+
+// Create the navigation tool function
+const createNavigationTool = (): Tool => {
+  return {
+    name: 'navigate',
+    definition: {
+      type: 'function',
+      function: {
+        name: 'navigate',
+        description: 'Navigate to a different page in the application, including product detail pages for specific agents and their variants, blog categories like Featured Articles, and other site sections. You MUST use this function whenever discussing specific products, services, when users ask about featured or recommended content, or when suggesting next steps like booking a demo. After navigating to a product page, ALWAYS ask if they would like to schedule a demo or call to discuss implementation.',
+        parameters: {
+          type: 'object',
+          properties: {
+            route: {
+              type: 'string',
+              description: 'The route to navigate to, e.g., "/products", "/services", "/contact", "/blog?category=Featured" for featured articles, or product detail pages like "/products/anaya", "/products/anaya-pro", "/products/rocketsingh", "/products/rocketsingh-saas", etc. When discussing a product or variant, navigate to its corresponding page. When users ask about featured/recommended content, navigate to "/blog?category=Featured".'
+            }
+          },
+          required: ['route']
+        }
+      }
+    },
+    handler: async (params: any) => {
+      const { route: rawRoute, blogArticle } = params;
+      const context = params.context;
+      
+      // If blogArticle is provided, use the blog article navigation function
+      if (blogArticle) {
+        console.log(`NavigationTool: Blog article specified: "${blogArticle}"`);
+        return navigateToBlogArticle(blogArticle, context);
+      }
+      
+      // Check if the route is specifically asking for a blog article
+      if (rawRoute.includes('blog article about') || rawRoute.includes('article about')) {
+        const articleTopic = rawRoute
+          .replace('blog article about', '')
+          .replace('article about', '')
+          .trim();
+          
+        if (articleTopic) {
+          console.log(`NavigationTool: Detected blog article request in route: "${articleTopic}"`);
+          return navigateToBlogArticle(articleTopic, context);
+        }
+      }
+      
+      // Parse and resolve the route to a valid path
+      const resolvedRoute = parseRoute(rawRoute);
+      
+      console.log(`NavigationTool: Navigating to ${resolvedRoute} (original: ${rawRoute})`);
+      
+      // Special handling for the anaya-in-action section
+      if (resolvedRoute === '/#anaya-in-action') {
+        // Store agent state before navigating to a section
+        setAgentActive();
+        
+        setTimeout(() => {
+          console.log(`NavigationTool: Navigating to section "See Anaya In Action"`);
+          if (window.location.pathname === '/') {
+            // First set the hash to ensure URL is updated
+            window.location.hash = 'anaya-in-action';
+            
+            // Use dedicated scroll helper with 100ms delay to ensure DOM is ready
+            setTimeout(() => {
+              try {
+                // Use the imported scroll helper for more reliable scrolling
+                forceScrollToSection('anaya-in-action');
+                
+                // After scroll completes, handle industry and use case selection
+                setTimeout(() => {
+                  const cleanRoute = rawRoute.toLowerCase().trim();
+                  
+                  // Parse industry from route
+                  let industryIndex = -1;
+                  if (cleanRoute.includes('ecommerce') || cleanRoute.includes('e-commerce')) {
+                    industryIndex = 0;
+                  } else if (cleanRoute.includes('restaurant')) {
+                    industryIndex = 1;
+                  } else if (cleanRoute.includes('hotel')) {
+                    industryIndex = 2;
+                  } else if (cleanRoute.includes('blog') || cleanRoute.includes('media')) {
+                    industryIndex = 3;
+                  } else if (cleanRoute.includes('saas') || cleanRoute.includes('software')) {
+                    industryIndex = 4;
+                  }
+                  
+                  // Parse use case from route
+                  let useCaseIndex = -1;
+                  if (cleanRoute.includes('search') || cleanRoute.includes('product search')) {
+                    useCaseIndex = 0;
+                  } else if (cleanRoute.includes('recommendation') || cleanRoute.includes('recommendations')) {
+                    useCaseIndex = 1;
+                  } else if (cleanRoute.includes('engagement') || cleanRoute.includes('customer engagement')) {
+                    useCaseIndex = 2;
+                  } else if (cleanRoute.includes('lead') || cleanRoute.includes('capture')) {
+                    useCaseIndex = 3;
+                  } else if (cleanRoute.includes('support') || cleanRoute.includes('connection')) {
+                    useCaseIndex = 4;
+                  }
+                  
+                  // Use direct state manipulation - most reliable method
+                  if (industryIndex >= 0 && (window as any).anayaSetActiveIndustry) {
+                    console.log(`Setting industry directly: ${industryIndex}`);
+                    (window as any).anayaSetActiveIndustry(industryIndex);
+                  }
+                  
+                  if (useCaseIndex >= 0 && (window as any).anayaSetActiveUseCase) {
+                    // Use small delay to let industry selection take effect
+                    setTimeout(() => {
+                      console.log(`Setting use case directly: ${useCaseIndex}`);
+                      (window as any).anayaSetActiveUseCase(useCaseIndex);
+                    }, 300);
+                  }
+                }, 500);
+              } catch (err) {
+                console.error('Error during navigation:', err);
+              }
+            }, 100); // Use a very short delay to ensure immediate execution
+          } else {
+            window.location.href = resolvedRoute;
+          }
+        }, 50); // Use a very short delay to ensure immediate execution
+        
+        return { 
+          success: true, 
+          message: `I'm taking you to the "See Anaya In Action" section. This section showcases how Anaya works across different industries like E-Commerce, Restaurants, Hotels, Blogs & Media, and SaaS businesses, with detailed use cases for each industry.`
+        };
+      }
+      
+      // Special handling for transform-your-website section
+      if (resolvedRoute === '/#transform-your-website') {
+        // Store agent state before navigating to a section
+        setAgentActive();
+        
+        setTimeout(() => {
+          console.log(`NavigationTool: Navigating to section "Transform Your Website with Anaya"`);
+          if (window.location.pathname === '/') {
+            // First set the hash to ensure URL is updated
+            window.location.hash = 'transform-your-website';
+            
+            // Use dedicated scroll helper with 100ms delay to ensure DOM is ready
+            setTimeout(() => {
+              try {
+                // Use the imported scroll helper for more reliable scrolling
+                forceScrollToSection('transform-your-website');
+              } catch (err) {
+                console.error('Error during navigation:', err);
+              }
+            }, 100);
+          } else {
+            window.location.href = resolvedRoute;
+          }
+        }, 50); // Use a very short delay to ensure immediate execution
+        
+        return { 
+          success: true, 
+          message: `I'm taking you to the "Transform Your Website with Anaya" section. This section shows how Anaya can enhance your website with intelligent product search, personalized recommendations, enhanced customer engagement, and improved accessibility.`
+        };
+      }
+      
+      // Handle standard navigation for routes like /products, /services, /blog, etc.
+      setTimeout(() => {
+        console.log(`NavigationTool: Navigating to standard route: ${resolvedRoute}`);
+        
+        // Store agent state before navigation
+        setAgentActive();
+        
+        // Use Next.js router if available for client-side navigation
+        if (context && context.router) {
+          console.log(`NavigationTool: Using Next.js router for navigation`);
+          try {
+            // Use router.push for client-side navigation which preserves component state
+            context.router.push(resolvedRoute);
+          } catch (err) {
+            console.error('Navigation error:', err);
+      // Rest of the existing handler code...
+    }
+  };
+};
+
+// Create an instance of the navigation tool
+const navigationTool = createNavigationTool();
+
+// Setup hook to provide router context to the navigation tool
+export const useNavigationTool = () => {
+  const router = useRouter();
+  
+  // Set the router in the tool manager context
+  toolManager.setContext({ router });
+  
+  return null; // This hook doesn't render anything
+};
+
+// Export a function to register the tool when needed
+export const registerNavigationTool = () => {
+  toolManager.registerTool(navigationTool);
+  return navigationTool;
+};
+
+// Export the tool without registering it at the module level
+export default navigationTool;
