@@ -131,6 +131,59 @@
             font-size: 0.9rem;
         }
         
+        .collapsible-section {
+            margin: 20px 0;
+        }
+        
+        .collapsible-header {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px 8px 0 0;
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .collapsible-header:hover {
+            background: #e9ecef;
+        }
+        
+        .collapsible-header h4 {
+            margin: 0;
+            color: #495057;
+        }
+        
+        .collapsible-toggle {
+            font-size: 1.2em;
+            color: #667eea;
+            transition: transform 0.3s ease;
+        }
+        
+        .collapsible-toggle.expanded {
+            transform: rotate(180deg);
+        }
+        
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .collapsible-content.expanded {
+            max-height: 1000px;
+        }
+        
+        .collapsible-content .code-block {
+            margin: 0;
+            border-radius: 0 0 8px 8px;
+        }
+        
         .timeline {
             position: relative;
             margin: 30px 0;
@@ -457,8 +510,13 @@ Travel time calculation between appointments:
 </pre>
         </div>
 
-        <h4>1. Cliniko API Integration (Next.js API Routes)</h4>
-        <div class="code-block">
+        <div class="collapsible-section">
+            <div class="collapsible-header">
+                <h4>1. Cliniko API Integration (Next.js API Routes)</h4>
+                <span class="collapsible-toggle">▼</span>
+            </div>
+            <div class="collapsible-content">
+                <div class="code-block">
 <pre>
 // /app/api/cliniko/appointments/route.ts
 import { clinikoClient } from '@/lib/cliniko';
@@ -514,10 +572,17 @@ export async function POST(request: Request) {
   }
 }
 </pre>
+                </div>
+            </div>
         </div>
 
-        <h4>2. Google Maps Integration (Client & Server)</h4>
-        <div class="code-block">
+        <div class="collapsible-section">
+            <div class="collapsible-header">
+                <h4>2. Google Maps Integration (Client & Server)</h4>
+                <span class="collapsible-toggle">▼</span>
+            </div>
+            <div class="collapsible-content">
+                <div class="code-block">
 <pre>
 // /lib/google-maps.ts
 export class GoogleMapsService {
@@ -560,10 +625,17 @@ export class GoogleMapsService {
   }
 }
 </pre>
+                </div>
+            </div>
         </div>
 
-        <h4>3. Database Schema (Neon PostgreSQL)</h4>
-        <div class="code-block">
+        <div class="collapsible-section">
+            <div class="collapsible-header">
+                <h4>3. Database Schema (Neon PostgreSQL)</h4>
+                <span class="collapsible-toggle">▼</span>
+            </div>
+            <div class="collapsible-content">
+                <div class="code-block">
 <pre>
 -- Core tables for MVP
 CREATE TABLE users (
@@ -605,6 +677,8 @@ CREATE TABLE geocode_cache (
   created_at TIMESTAMP DEFAULT NOW()
 );
 </pre>
+                </div>
+            </div>
         </div>
 
         <h3>Why This MVP Architecture is Superior</h3>
@@ -1002,5 +1076,29 @@ CREATE TABLE geocode_cache (
         </div>
 
     </div>
+    
+    <script>
+        // Collapsible functionality for code sections
+        document.addEventListener('DOMContentLoaded', function() {
+            const headers = document.querySelectorAll('.collapsible-header');
+            
+            headers.forEach(header => {
+                header.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const toggle = this.querySelector('.collapsible-toggle');
+                    
+                    if (content.classList.contains('expanded')) {
+                        content.classList.remove('expanded');
+                        toggle.classList.remove('expanded');
+                        toggle.textContent = '▼';
+                    } else {
+                        content.classList.add('expanded');
+                        toggle.classList.add('expanded');
+                        toggle.textContent = '▲';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html> 
