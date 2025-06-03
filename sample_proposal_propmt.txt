@@ -1,0 +1,82 @@
+Create a proposal same like we did for these proposals:
+proposals/marketing-agency-ai-automation
+proposals/mlm-automation-platform
+
+Here is the requirement:
+Summary
+
+Do you thrive at the intersection of creativity, automation, and AI? Are you a workflow wizard who loves building smart, human-in-the-loop automation systems?
+
+We're Escapism (escapism.ai), a growing platform dedicated to exploring the exciting world of AI-driven creativity. We're on the hunt for an experienced AI Content Automation Specialist to help us design and deploy an innovative content automation workflow primarily using Make.com (though we're open if you prefer other platforms like N8N).
+
+🔑 Project Overview:
+
+We're looking to create a robust, automated system that:
+
+Curates and delivers daily AI and creativity news stories every morning at 6 a.m. for human review.
+
+Facilitates seamless human-AI collaboration, where the founder selects news stories and creative angles, then AI takes over to draft high-quality blog posts, social media captions (Instagram, Facebook, LinkedIn), and engaging YouTube scripts.
+
+Automates the conversion of 10–20 weekly blog posts into a polished, ready-to-send newsletter.
+
+Includes smart API integrations with tools such as ChatGPT, Claude, Runway, Kling, MidJourney, and more, automating as much "grunt work" as possible, freeing the human creative to focus on refining ideas and ensuring quality.
+
+🎯 Your Role:
+
+You'll architect, build, and deploy this streamlined content system from the ground up. Your solution will empower us to consistently publish top-tier, engaging content across multiple channels efficiently. This project is a blend of strategic thinking and detailed execution—it's about creating a sustainable automated system that's intelligent, adaptable, and human-lead.
+
+🛠 What We're Looking For:
+
+Proven experience building automation systems using Make.com (strongly preferred), N8N, or similar platforms like Zapier.
+
+Deep API integration skills, particularly with AI services (OpenAI API, Runway, MidJourney, Kling, etc.).
+
+Hands-on experience automating content creation workflows (blogs, social media posts, newsletters, and video scripts).
+
+Passion for systems that blend human creativity and AI-driven automation.
+
+Bonus points if you have experience automating image or video generation.
+
+💼 What's in it for You:
+
+Opportunity for a long-term partnership. Nail this project, and there's plenty of room for future collaboration as we continue expanding our systems and workflows.
+
+Work on cutting-edge content automation using the latest AI tools—it's creative, dynamic, and future-focused.
+
+🎉 How to Apply:
+
+Introduce yourself briefly, highlighting your relevant automation experience.
+
+Share specific examples or case studies of similar automation projects you've executed, especially those involving human-AI collaboration.
+
+Clearly state your preferred automation tools/platforms and briefly explain why.
+
+Suggest a realistic fixed-price budget for your solution based on the described scope.
+
+If you're excited about building a next-level content automation machine at the crossroads of AI and creativity, we can't wait to hear from you :)
+
+
+
+
+Budget: $50/Hr
+
+
+Instructions For you:
+
+- Create new folder for this
+- Create same folder and file structure like the others proposals like we already created for other proposals
+- Read about brain9ai experience from 
+    - brain9ai/BRAIN9AI-PROJECT-EXPERIENCE-REFERENCE.md
+    - brain9ai/BRAIN9AI-QUICK-REFERENCE
+    - brain9ai/BRAIN9AI-WORKFLOW-AUTOMATION-EXPERTISE
+- Always try to match with the job requirement
+- Try to add insight about the requirement with technical details
+- Match the design & format as we have for the other proposal
+- Slect the current date for proposal date
+
+
+Special Note:
+This Project exactly matching our speciality: We have great experience with Voice based WebAgent(Lead Capture, Appoint Bookig)
+Then Social Media Agent, Call Agent, VBooking Agent, Voice Based Boking Agents
+
+Build this proposal very carefully

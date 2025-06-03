@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhysioFlow AI - Smart Scheduling for Mobile Physiotherapy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8fafc;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .quick-overview {
+            background: white;
+            margin: -2rem auto 3rem;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 800px;
+        }
+        
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .overview-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f7fafc;
+            border-radius: 10px;
+        }
+        
+        .overview-card h3 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .overview-card p {
+            color: #718096;
+        }
+        
+        .main-content {
+            padding: 3rem 0;
+        }
+        
+        .proposal-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .proposal-section h2 {
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .simple-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .simple-card {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .simple-card h4 {
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+        
+        .simple-card ul {
+            margin: 1rem 0;
+            padding-left: 1rem;
+        }
+        
+        .simple-card li {
+            margin: 0.3rem 0;
+            color: #718096;
+        }
+        
+        .pricing-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 3rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .pricing-card {
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-outline:hover {
+            background: white;
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .overview-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <h1>PhysioFlow AI</h1>
+            <p>Smart Scheduling Dashboard for Mobile Physiotherapy</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="quick-overview">
+            <h2 style="text-align: center; color: #2d3748; margin-bottom: 1rem;">What We're Building</h2>
+            <p style="text-align: center; color: #718096; margin-bottom: 2rem;">A complete scheduling solution that integrates with Cliniko and optimizes routes for your 10 physiotherapists</p>
+            
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <h3>8-20 weeks</h3>
+                    <p>Development timeline: MVP at 8-10 weeks, Full version 10-20 weeks</p>
+                </div>
+                <div class="overview-card">
+                    <h3>$10k-24k</h3>
+                    <p>MVP: $10k-12k, Full version: $20k-24k total</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="proposal-section">
+                <h2>🎯 What You Get</h2>
+                <div class="simple-grid">
+                    <div class="simple-card">
+                        <h4>📱 Smart Dashboard</h4>
+                        <ul>
+                            <li>Real-time Cliniko sync</li>
+                            <li>Drag & drop scheduling</li>
+                            <li>Mobile-responsive design</li>
+                        </ul>
+                    </div>
+                    <div class="simple-card">
+                        <h4>🗺️ Route Optimization</h4>
+                        <ul>
+                            <li>Google Maps integration</li>
+                            <li>Travel time calculations</li>
+                            <li>Daily route planning</li>
+                        </ul>
+                    </div>
+                    <div class="simple-card">
+                        <h4>🤖 Smart Automation</h4>
+                        <ul>
+                            <li>n8n workflow automation</li>
+                            <li>Patient reminders</li>
+                            <li>Waitlist management</li>
+                        </ul>
+                    </div>
+                    <div class="simple-card">
+                        <h4>🔒 Secure & Compliant</h4>
+                        <ul>
+                            <li>Australian Privacy Act</li>
+                            <li>Encrypted data storage</li>
+                            <li>Role-based access</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="proposal-section">
+                <h2>🛠️ Tech Stack (Your Preferences)</h2>
+                <div class="simple-grid">
+                    <div class="simple-card">
+                        <h4>Frontend</h4>
+                        <ul>
+                            <li>React + Next.js</li>
+                            <li>Responsive design</li>
+                        </ul>
+                    </div>
+                    <div class="simple-card">
+                        <h4>Backend</h4>
+                        <ul>
+                            <li>Node.js</li>
+                            <li>PostgreSQL (Neon)</li>
+                        </ul>
+                    </div>
+                    <div class="simple-card">
+                        <h4>Authentication</h4>
+                        <ul>
+                            <li>Clerk</li>
+                            <li>Secure tokens</li>
+                        </ul>
+                    </div>
+                    <div class="simple-card">
+                        <h4>Automation</h4>
+                        <ul>
+                            <li>n8n workflows</li>
+                            <li>Make.com integration</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pricing-section">
+                <h2>💰 Simple Pricing</h2>
+                <p>Choose your approach - start small or go full-featured</p>
+                
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>🚀 MVP Version</h3>
+                        <div class="price">$10,000 - $12,000</div>
+                        <p><strong>8-10 weeks delivery</strong></p>
+                        <ul style="text-align: left; margin: 1rem 0;">
+                            <li>Core scheduling dashboard</li>
+                            <li>Cliniko integration</li>
+                            <li>Basic route optimization</li>
+                            <li>Mobile responsive</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="pricing-card">
+                        <h3>🎯 Full Version</h3>
+                        <div class="price">$20,000 - $24,000</div>
+                        <p><strong>10-20 weeks delivery</strong></p>
+                        <ul style="text-align: left; margin: 1rem 0;">
+                            <li>Everything in MVP</li>
+                            <li>AI scheduling optimization</li>
+                            <li>Advanced automation</li>
+                            <li>Analytics & reporting</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <a href="demo/index.html" class="btn" style="background: #48bb78; margin-right: 1rem;">🎯 See Interactive Demo</a>
+                    <a href="physiotherapy-scheduling-proposal.html" class="btn">📋 View Detailed Proposal</a>
+                </div>
+            </div>
+
+            <div class="proposal-section">
+                <h2>🏆 Why Choose Us</h2>
+                <div class="simple-grid">
+                    <div class="simple-card">
+                        <h4>Healthcare Experience</h4>
+                        <p>Built 15+ medical practice systems with 10,000+ appointments managed</p>
+                    </div>
+                    <div class="simple-card">
+                        <h4>Tech Expertise</h4>
+                        <p>5+ years with your preferred stack: React, Node.js, PostgreSQL</p>
+                    </div>
+                    <div class="simple-card">
+                        <h4>Proven AI Solutions</h4>
+                        <p>Visit <strong>www.brain9ai.com</strong> to see our Appointment Scheduler Agent and Voice-based WebAgent in action</p>
+                    </div>
+                    <div class="simple-card">
+                        <h4>Australian Compliant</h4>
+                        <p>Full Privacy Act compliance and secure cloud hosting</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="proposal-section">
+                <h2>❓ Quick Questions for You</h2>
+                <div class="simple-grid">
+                    <div class="simple-card">
+                        <h4>Current Setup</h4>
+                        <ul>
+                            <li>How do you schedule now?</li>
+                            <li>Biggest pain point?</li>
+                            <li>Appointments per week?</li>
+                        </ul>
+                    </div>
+                    <div class="simple-card">
+                        <h4>Technical</h4>
+                        <ul>
+                            <li>Cliniko setup details?</li>
+                            <li>Other integrations needed?</li>
+                            <li>Special compliance needs?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

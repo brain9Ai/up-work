@@ -1,0 +1,2438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhysioFlow AI - Next-Gen Healthcare Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg-primary: #0a0b1e;
+            --bg-secondary: #1a1b3a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-tertiary: rgba(255, 255, 255, 0.5);
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(1deg); }
+            66% { transform: translateY(5px) rotate(-1deg); }
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 11, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+            100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.25rem;
+        }
+
+        .logo-text p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem 2rem 2rem;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Main Tab Navigation */
+        .main-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem auto 3rem auto;
+            padding: 0 2rem;
+            background: none;
+            max-width: 1400px;
+        }
+
+        .main-tab {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            padding: 1.25rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 200px;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .main-tab:hover::before {
+            left: 100%;
+        }
+
+        .main-tab:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .main-tab.active {
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: var(--primary);
+            font-weight: 600;
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .main-tab.active::before {
+            display: none;
+        }
+
+        .main-tab i {
+            font-size: 1.1rem;
+        }
+
+        /* Dashboard Tab Content */
+        .main-tab-content {
+            display: none;
+        }
+
+        .main-tab-content.active {
+            display: block;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2rem;
+        }
+
+        /* AI Assistant Sidebar */
+        .ai-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .ai-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
+        .ai-assistant {
+            text-align: center;
+        }
+
+        .ai-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .ai-avatar::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.5;
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .ai-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .ai-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .voice-interface {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .interface-tabs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 0.25rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn.active {
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            font-weight: 600;
+        }
+
+        .interface-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .interface-panel {
+            display: none;
+        }
+
+        .interface-panel.active {
+            display: block;
+        }
+
+        .phone-container {
+            text-align: center;
+        }
+
+        .phone-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .phone-number i {
+            font-size: 1.2rem;
+        }
+
+        .phone-button {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            margin: 0 auto 1rem;
+            display: block;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+        }
+
+        .phone-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.6);
+        }
+
+        .phone-button:active {
+            transform: scale(0.95);
+        }
+
+        .phone-button.calling {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            animation: pulse-call 1s infinite;
+        }
+
+        @keyframes pulse-call {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 15px 40px rgba(239, 68, 68, 0.8);
+            }
+        }
+
+        .phone-status {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .phone-status p {
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        .voice-button {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            margin: 0 auto 1rem;
+            display: block;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+        }
+
+        .voice-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(239, 68, 68, 0.6);
+        }
+
+        .voice-button:active {
+            transform: scale(0.95);
+        }
+
+        .voice-status {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .capabilities {
+            margin-top: 1rem;
+        }
+
+        .capability-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .capability-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(8px);
+        }
+
+        .capability-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+        }
+
+        .capability-content h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .capability-content p {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            line-height: 1.4;
+        }
+
+        /* Main Dashboard */
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .metric-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .dashboard-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .booking-queue {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .queue-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .queue-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .queue-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .queue-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
+        }
+
+        .patient-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .booking-info {
+            flex: 1;
+        }
+
+        .booking-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .booking-info p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-processing {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-confirmed {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .activity-feed {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 1.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.booking {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .activity-icon.optimization {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .activity-icon.reminder {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-content h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .activity-content p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .activity-time {
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .action-card:hover::before {
+            left: 100%;
+        }
+
+        .action-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .action-card h4 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .action-card p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(10, 11, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            background: rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-container {
+                padding: 1.5rem;
+            }
+
+            .dashboard-container {
+                grid-template-columns: 280px 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .main-tabs {
+                flex-direction: column;
+                gap: 0.5rem;
+                background: none;
+                padding: 0;
+                margin-bottom: 2rem;
+                align-items: center;
+            }
+
+            .main-tab {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 1rem 1.5rem;
+                min-width: 250px;
+                font-size: 0.95rem;
+            }
+
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .action-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+        }
+
+        /* Visual Section Styles */
+        .visual-section {
+            margin-top: 2rem;
+        }
+
+        .section-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+
+        .section-tab {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .section-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .section-content {
+            display: none;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        /* Calendar Styles */
+        .calendar-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .control-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: var(--primary);
+        }
+
+        .current-week {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .calendar-container {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: 100px repeat(5, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .time-column, .day-column {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 1rem;
+        }
+
+        .day-column small {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .calendar-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .time-slot {
+            display: grid;
+            grid-template-columns: 100px repeat(5, 1fr);
+            gap: 1rem;
+            align-items: stretch;
+        }
+
+        .time-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            color: var(--text-secondary);
+            padding: 1rem;
+        }
+
+        .appointment {
+            min-height: 60px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .appointment.available {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed var(--border);
+        }
+
+        .appointment.available:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+        }
+
+        .appointment.booked {
+            padding: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .appointment.ai-booked {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+            border: 1px solid rgba(99, 102, 241, 0.4);
+        }
+
+        .appointment.phone-booked {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.2));
+            border: 1px solid rgba(34, 197, 94, 0.4);
+        }
+
+        .appointment.voice-booked {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.2));
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        .appointment.break {
+            background: rgba(107, 114, 128, 0.2);
+            border: 1px solid rgba(107, 114, 128, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .break-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .apt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .patient-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+
+        .ai-tag, .phone-tag, .voice-tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.125rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .ai-tag {
+            background: rgba(99, 102, 241, 0.8);
+            color: white;
+        }
+
+        .apt-details {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+
+        /* Maps Styles */
+        .map-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .map-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .map-area {
+            position: relative;
+            height: 500px;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .map-background {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 40% 40%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 60%, rgba(34, 197, 94, 0.1) 0%, transparent 50%);
+        }
+
+        .sydney-label {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .area-labels {
+            position: absolute;
+            inset: 0;
+        }
+
+        .area-label {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            pointer-events: none;
+        }
+
+        .map-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+        }
+
+        .location-marker {
+            position: absolute;
+            transform: translate(-50%, -100%);
+            z-index: 20;
+        }
+
+        .marker-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+
+        .start-marker {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .patient-marker {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .marker-label {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 0.5rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .location-marker:hover .marker-label {
+            opacity: 1;
+        }
+
+        .route-lines {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+        }
+
+        .route-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .route-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .stat-details {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .route-optimization {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .route-optimization h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .insight-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .insight-item i {
+            color: var(--success);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>PhysioFlow AI</h1>
+                    <p>Next-Generation Healthcare Assistant</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="ai-status">
+                    <div class="status-dot"></div>
+                    <span>AI Assistant Online</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Tab Navigation -->
+    <div class="main-tabs">
+        <button class="main-tab active" onclick="switchMainTab('dashboard')" id="dashboard-main-tab">
+            <i class="fas fa-tachometer-alt"></i>
+            AI Dashboard
+        </button>
+        <button class="main-tab" onclick="switchMainTab('schedule')" id="schedule-main-tab">
+            <i class="fas fa-calendar-alt"></i>
+            Schedule & Routes
+        </button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Dashboard Tab Content -->
+        <div class="main-tab-content active" id="dashboard-content">
+            <div class="dashboard-container">
+                <!-- AI Assistant Sidebar -->
+                <aside class="ai-sidebar">
+                    <div class="ai-card ai-assistant">
+                        <div class="ai-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3 class="ai-name">Liya AI Assistant</h3>
+                        <p class="ai-description">
+                            Your intelligent healthcare companion powered by advanced AI for seamless appointment management, smart scheduling, and voice-driven interactions. Connect via voice or phone call.
+                        </p>
+                        
+                        <div class="voice-interface">
+                            <div class="interface-tabs">
+                                <button class="tab-btn active" onclick="switchTab('voice')" id="voice-tab">
+                                    <i class="fas fa-microphone"></i>
+                                    Voice
+                                </button>
+                                <button class="tab-btn" onclick="switchTab('phone')" id="phone-tab">
+                                    <i class="fas fa-phone"></i>
+                                    Phone
+                                </button>
+                            </div>
+                            
+                            <div class="interface-content">
+                                <!-- Voice Interface -->
+                                <div class="interface-panel active" id="voice-panel">
+                                    <button class="voice-button" onclick="activateVoice()">
+                                        <i class="fas fa-microphone"></i>
+                                    </button>
+                                    <div class="voice-status">
+                                        <p id="voice-status">Tap to speak with Liya</p>
+                                        <small>"Book appointment for Sarah tomorrow"</small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Phone Interface -->
+                                <div class="interface-panel" id="phone-panel">
+                                    <div class="phone-container">
+                                        <div class="phone-number">
+                                            <i class="fas fa-phone"></i>
+                                            <span>+61 2 8123 4567</span>
+                                        </div>
+                                        <button class="phone-button" onclick="initiateCall()">
+                                            <i class="fas fa-phone"></i>
+                                        </button>
+                                        <div class="phone-status">
+                                            <p id="phone-status">Call Liya AI Assistant</p>
+                                            <small>Available 24/7 for appointments</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-card capabilities">
+                        <h4 style="margin-bottom: 1.5rem; color: var(--text-primary); font-weight: 600;">AI Capabilities</h4>
+                        
+                        <div class="capability-item" onclick="highlightFeature('booking')">
+                            <div class="capability-icon">
+                                <i class="fas fa-calendar-plus"></i>
+                            </div>
+                            <div class="capability-content">
+                                <h4>Smart Booking</h4>
+                                <p>Voice-powered appointment scheduling with intelligent conflict resolution</p>
+                            </div>
+                        </div>
+
+                        <div class="capability-item" onclick="highlightFeature('optimization')">
+                            <div class="capability-icon">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <div class="capability-content">
+                                <h4>Route Optimization</h4>
+                                <p>AI-driven route planning to minimize travel time and maximize efficiency</p>
+                            </div>
+                        </div>
+
+                        <div class="capability-item" onclick="highlightFeature('reminders')">
+                            <div class="capability-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="capability-content">
+                                <h4>Smart Notifications</h4>
+                                <p>Automated patient reminders with personalized messaging</p>
+                            </div>
+                        </div>
+
+                        <div class="capability-item" onclick="highlightFeature('analytics')">
+                            <div class="capability-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="capability-content">
+                                <h4>Predictive Analytics</h4>
+                                <p>Real-time insights and demand forecasting for better planning</p>
+                            </div>
+                        </div>
+
+                        <div class="capability-item" onclick="highlightFeature('status')">
+                            <div class="capability-icon">
+                                <i class="fas fa-pulse"></i>
+                            </div>
+                            <div class="capability-content">
+                                <h4>Live Status Tracking</h4>
+                                <p>Real-time monitoring of appointments and therapist availability</p>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Dashboard -->
+                <main class="dashboard">
+                    <!-- Metrics Grid -->
+                    <div class="dashboard-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="metric-value">47</div>
+                            <div class="metric-label">AI Bookings Today</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="metric-value">3.2h</div>
+                            <div class="metric-label">Time Saved</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="metric-value">94%</div>
+                            <div class="metric-label">AI Accuracy</div>
+                        </div>
+                        
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="metric-value">28</div>
+                            <div class="metric-label">Voice Interactions</div>
+                        </div>
+                    </div>
+
+                    <!-- Live AI Scheduling -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-brain"></i>
+                                Live AI Scheduling Engine
+                                <span class="badge">Active</span>
+                            </div>
+                        </div>
+                        
+                        <div class="content-grid">
+                            <div class="booking-queue">
+                                <div class="queue-header">
+                                    <i class="fas fa-list"></i>
+                                    <span>Real-time Booking Queue</span>
+                                </div>
+                                
+                                <div class="queue-item">
+                                    <div class="patient-avatar">JS</div>
+                                    <div class="booking-info">
+                                        <h4>John Smith</h4>
+                                        <p>Requesting back pain treatment • Bondi Junction area • Prefers morning slots</p>
+                                    </div>
+                                    <div class="status-badge status-processing">
+                                        <i class="fas fa-cog fa-spin"></i> Processing
+                                    </div>
+                                </div>
+
+                                <div class="queue-item">
+                                    <div class="patient-avatar">MW</div>
+                                    <div class="booking-info">
+                                        <h4>Mary Wilson</h4>
+                                        <p>Rescheduling request: Today 3PM → Tomorrow 10AM • Traffic concerns</p>
+                                    </div>
+                                    <div class="status-badge status-confirmed">
+                                        <i class="fas fa-check"></i> Confirmed
+                                    </div>
+                                </div>
+
+                                <div class="queue-item">
+                                    <div class="patient-avatar">AB</div>
+                                    <div class="booking-info">
+                                        <h4>Alex Brown</h4>
+                                        <p>Voice booking: "Need physiotherapy this week for shoulder injury"</p>
+                                    </div>
+                                    <div class="status-badge status-processing">
+                                        <i class="fas fa-microphone"></i> Analyzing
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="activity-feed">
+                                <div class="queue-header">
+                                    <i class="fas fa-stream"></i>
+                                    <span>Live Activity Stream</span>
+                                </div>
+                                
+                                <div class="activity-item">
+                                    <div class="activity-icon booking">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>AI Booked: Peter Green</h4>
+                                        <p>Voice request processed successfully • Bondi Junction, Today 2:00 PM with Sarah Adams</p>
+                                        <div class="activity-time">Just now</div>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-icon optimization">
+                                        <i class="fas fa-route"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Route Optimized: Sarah Adams</h4>
+                                        <p>AI reordered appointments: Bondi → Randwick → Coogee • Saved 25 minutes</p>
+                                        <div class="activity-time">2 minutes ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-icon reminder">
+                                        <i class="fas fa-bell"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Smart Reminders Sent</h4>
+                                        <p>Personalized notifications sent to 8 patients for tomorrow's appointments</p>
+                                        <div class="activity-time">5 minutes ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-icon booking">
+                                        <i class="fas fa-magic"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Gap Filled Automatically</h4>
+                                        <p>Waitlist patient Emma Johnson moved to 3:30 PM cancellation slot</p>
+                                        <div class="activity-time">8 minutes ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-icon booking">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Phone Booking: Emma Davis</h4>
+                                        <p>Called AI Assistant • Scheduled knee therapy, Tuesday 11:00 AM with Dr. Wilson</p>
+                                        <div class="activity-time">3 minutes ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="action-grid">
+                        <div class="action-card" onclick="testAIFeature('booking')">
+                            <div class="action-icon">
+                                <i class="fas fa-calendar-plus"></i>
+                            </div>
+                            <h4>Test AI Booking</h4>
+                            <p>Experience voice-powered appointment scheduling</p>
+                        </div>
+
+                        <div class="action-card" onclick="testAIFeature('optimize')">
+                            <div class="action-icon">
+                                <i class="fas fa-magic"></i>
+                            </div>
+                            <h4>Route Optimization</h4>
+                            <p>Let AI optimize today's travel routes</p>
+                        </div>
+
+                        <div class="action-card" onclick="testAIFeature('status')">
+                            <div class="action-icon">
+                                <i class="fas fa-pulse"></i>
+                            </div>
+                            <h4>Live Status Check</h4>
+                            <p>Real-time appointment and therapist status</p>
+                        </div>
+
+                        <div class="action-card" onclick="testAIFeature('insights')">
+                            <div class="action-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h4>AI Insights</h4>
+                            <p>Get predictive analytics and recommendations</p>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- Schedule & Routes Tab Content -->
+        <div class="main-tab-content" id="schedule-content">
+            <div class="schedule-container">
+                <!-- Sub-tab Navigation for Schedule & Routes -->
+                <div class="section-tabs">
+                    <button class="section-tab active" onclick="switchSection('calendar')" id="calendar-tab">
+                        <i class="fas fa-calendar-alt"></i>
+                        Smart Calendar
+                    </button>
+                    <button class="section-tab" onclick="switchSection('maps')" id="maps-tab">
+                        <i class="fas fa-map-marked-alt"></i>
+                        Route Planning
+                    </button>
+                </div>
+
+                <!-- Calendar View -->
+                <div class="dashboard-card section-content active" id="calendar-section">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            AI-Powered Schedule Calendar
+                            <span class="badge">Live</span>
+                        </div>
+                        <div class="calendar-controls">
+                            <button class="control-btn" onclick="changeWeek(-1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="current-week">Week of Dec 11-17, 2023</span>
+                            <button class="control-btn" onclick="changeWeek(1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <div class="time-column">Time</div>
+                            <div class="day-column">Mon<br><small>11</small></div>
+                            <div class="day-column">Tue<br><small>12</small></div>
+                            <div class="day-column">Wed<br><small>13</small></div>
+                            <div class="day-column">Thu<br><small>14</small></div>
+                            <div class="day-column">Fri<br><small>15</small></div>
+                        </div>
+                        
+                        <div class="calendar-body">
+                            <div class="time-slot">
+                                <div class="time-label">9:00 AM</div>
+                                <div class="appointment available"></div>
+                                <div class="appointment booked ai-booked" data-patient="Sarah Adams" data-location="Bondi">
+                                    <div class="apt-header">
+                                        <span class="patient-name">Sarah Adams</span>
+                                        <span class="ai-tag">AI</span>
+                                    </div>
+                                    <div class="apt-details">Back therapy • Bondi Junction</div>
+                                </div>
+                                <div class="appointment available"></div>
+                                <div class="appointment booked phone-booked" data-patient="John Smith" data-location="Randwick">
+                                    <div class="apt-header">
+                                        <span class="patient-name">John Smith</span>
+                                        <span class="phone-tag">📞</span>
+                                    </div>
+                                    <div class="apt-details">Knee rehab • Randwick</div>
+                                </div>
+                                <div class="appointment available"></div>
+                            </div>
+                            
+                            <div class="time-slot">
+                                <div class="time-label">10:00 AM</div>
+                                <div class="appointment booked voice-booked" data-patient="Mary Wilson" data-location="Coogee">
+                                    <div class="apt-header">
+                                        <span class="patient-name">Mary Wilson</span>
+                                        <span class="voice-tag">🎤</span>
+                                    </div>
+                                    <div class="apt-details">Shoulder therapy • Coogee</div>
+                                </div>
+                                <div class="appointment available"></div>
+                                <div class="appointment booked ai-booked" data-patient="Emma Davis" data-location="Bondi">
+                                    <div class="apt-header">
+                                        <span class="patient-name">Emma Davis</span>
+                                        <span class="ai-tag">AI</span>
+                                    </div>
+                                    <div class="apt-details">Neck treatment • Bondi Beach</div>
+                                </div>
+                                <div class="appointment available"></div>
+                                <div class="appointment available"></div>
+                            </div>
+                            
+                            <div class="time-slot">
+                                <div class="time-label">11:00 AM</div>
+                                <div class="appointment available"></div>
+                                <div class="appointment booked ai-booked" data-patient="Alex Brown" data-location="Surry Hills">
+                                    <div class="apt-header">
+                                        <span class="patient-name">Alex Brown</span>
+                                        <span class="ai-tag">AI</span>
+                                    </div>
+                                    <div class="apt-details">Sports injury • Surry Hills</div>
+                                </div>
+                                <div class="appointment available"></div>
+                                <div class="appointment available"></div>
+                                <div class="appointment booked phone-booked" data-patient="Lisa Chen" data-location="Paddington">
+                                    <div class="apt-header">
+                                        <span class="patient-name">Lisa Chen</span>
+                                        <span class="phone-tag">📞</span>
+                                    </div>
+                                    <div class="apt-details">Post-surgery rehab • Paddington</div>
+                                </div>
+                            </div>
+                            
+                            <div class="time-slot">
+                                <div class="time-label">12:00 PM</div>
+                                <div class="appointment available"></div>
+                                <div class="appointment available"></div>
+                                <div class="appointment break">
+                                    <div class="break-content">
+                                        <i class="fas fa-coffee"></i>
+                                        <span>Lunch Break</span>
+                                    </div>
+                                </div>
+                                <div class="appointment available"></div>
+                                <div class="appointment available"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Maps View -->
+                <div class="dashboard-card section-content" id="maps-section">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-map-marked-alt"></i>
+                            AI Route Optimization
+                            <span class="badge">Smart Routing</span>
+                        </div>
+                        <div class="map-controls">
+                            <button class="control-btn active" onclick="selectRoute('optimal')">
+                                <i class="fas fa-route"></i> Optimal Route
+                            </button>
+                            <button class="control-btn" onclick="selectRoute('time')">
+                                <i class="fas fa-clock"></i> Fastest Route
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="map-container">
+                        <div class="map-area">
+                            <div class="map-overlay">
+                                <div class="location-marker start" style="top: 20%; left: 30%;">
+                                    <div class="marker-icon start-marker">
+                                        <i class="fas fa-home"></i>
+                                    </div>
+                                    <div class="marker-label">Start: Clinic Base</div>
+                                </div>
+                                
+                                <div class="location-marker patient" style="top: 40%; left: 60%;">
+                                    <div class="marker-icon patient-marker">
+                                        <span>1</span>
+                                    </div>
+                                    <div class="marker-label">Sarah Adams - Bondi Junction</div>
+                                </div>
+                                
+                                <div class="location-marker patient" style="top: 60%; left: 45%;">
+                                    <div class="marker-icon patient-marker">
+                                        <span>2</span>
+                                    </div>
+                                    <div class="marker-label">John Smith - Randwick</div>
+                                </div>
+                                
+                                <div class="location-marker patient" style="top: 70%; left: 75%;">
+                                    <div class="marker-icon patient-marker">
+                                        <span>3</span>
+                                    </div>
+                                    <div class="marker-label">Mary Wilson - Coogee</div>
+                                </div>
+                                
+                                <div class="location-marker patient" style="top: 35%; left: 25%;">
+                                    <div class="marker-icon patient-marker">
+                                        <span>4</span>
+                                    </div>
+                                    <div class="marker-label">Emma Davis - Bondi Beach</div>
+                                </div>
+                                
+                                <!-- Route Lines -->
+                                <svg class="route-lines" width="100%" height="100%">
+                                    <path d="M 30% 20% Q 45% 30% 60% 40%" stroke="#6366f1" stroke-width="3" fill="none" stroke-dasharray="5,5">
+                                        <animate attributeName="stroke-dashoffset" values="0;-10" dur="2s" repeatCount="indefinite"/>
+                                    </path>
+                                    <path d="M 60% 40% Q 52% 50% 45% 60%" stroke="#6366f1" stroke-width="3" fill="none" stroke-dasharray="5,5">
+                                        <animate attributeName="stroke-dashoffset" values="0;-10" dur="2s" repeatCount="indefinite"/>
+                                    </path>
+                                    <path d="M 45% 60% Q 60% 65% 75% 70%" stroke="#6366f1" stroke-width="3" fill="none" stroke-dasharray="5,5">
+                                        <animate attributeName="stroke-dashoffset" values="0;-10" dur="2s" repeatCount="indefinite"/>
+                                    </path>
+                                    <path d="M 75% 70% Q 50% 52% 25% 35%" stroke="#6366f1" stroke-width="3" fill="none" stroke-dasharray="5,5">
+                                        <animate attributeName="stroke-dashoffset" values="0;-10" dur="2s" repeatCount="indefinite"/>
+                                    </path>
+                                </svg>
+                            </div>
+                            
+                            <div class="map-background">
+                                <div class="sydney-label">Sydney, Australia</div>
+                                <div class="area-labels">
+                                    <div class="area-label" style="top: 25%; left: 55%;">Bondi Junction</div>
+                                    <div class="area-label" style="top: 55%; left: 40%;">Randwick</div>
+                                    <div class="area-label" style="top: 75%; left: 70%;">Coogee</div>
+                                    <div class="area-label" style="top: 30%; left: 20%;">Bondi Beach</div>
+                                    <div class="area-label" style="top: 45%; left: 15%;">Paddington</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="route-info">
+                            <div class="route-stats">
+                                <div class="stat-item">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-route"></i>
+                                    </div>
+                                    <div class="stat-details">
+                                        <div class="stat-value">42 km</div>
+                                        <div class="stat-label">Total Distance</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="stat-details">
+                                        <div class="stat-value">2.3 hrs</div>
+                                        <div class="stat-label">Travel Time</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-leaf"></i>
+                                    </div>
+                                    <div class="stat-details">
+                                        <div class="stat-value">-25%</div>
+                                        <div class="stat-label">CO2 Reduction</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="stat-item">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-magic"></i>
+                                    </div>
+                                    <div class="stat-details">
+                                        <div class="stat-value">94%</div>
+                                        <div class="stat-label">AI Efficiency</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="route-optimization">
+                                <h4>
+                                    <i class="fas fa-lightbulb"></i>
+                                    AI Optimization Insights
+                                </h4>
+                                <div class="insight-list">
+                                    <div class="insight-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Reordered stops to minimize backtracking</span>
+                                    </div>
+                                    <div class="insight-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Avoided peak traffic on Anzac Parade</span>
+                                    </div>
+                                    <div class="insight-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Grouped nearby appointments efficiently</span>
+                                    </div>
+                                    <div class="insight-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Optimized for patient preferences</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>Experience the Future of Healthcare Scheduling</h3>
+            <p>PhysioFlow AI combines cutting-edge artificial intelligence with intuitive design to revolutionize physiotherapy practice management.</p>
+            <div class="footer-links">
+                <a href="../index.html" class="footer-link">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Proposal
+                </a>
+                <a href="../physiotherapy-scheduling-proposal.html" class="footer-link">
+                    <i class="fas fa-file-alt"></i>
+                    Technical Details
+                </a>
+                <a href="https://www.brain9ai.com/" class="footer-link" target="_blank">
+                    <i class="fas fa-external-link-alt"></i>
+                    Visit Brain9 AI
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Voice activation simulation
+        function activateVoice() {
+            const button = document.querySelector('.voice-button');
+            const status = document.getElementById('voice-status');
+            
+            // Start listening state
+            button.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            button.innerHTML = '<i class="fas fa-stop"></i>';
+            status.textContent = 'Listening... Speak now!';
+            
+            setTimeout(() => {
+                // Processing state
+                button.innerHTML = '<i class="fas fa-cog fa-spin"></i>';
+                status.textContent = 'Processing your voice command...';
+                
+                setTimeout(() => {
+                    // Success state
+                    status.textContent = 'Command processed successfully!';
+                    addActivityToFeed('Voice Command: "Book appointment for tomorrow morning"', 'booking');
+                    
+                    setTimeout(() => {
+                        // Reset state
+                        button.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                        button.innerHTML = '<i class="fas fa-microphone"></i>';
+                        status.textContent = 'Tap to speak with Liya';
+                    }, 2000);
+                }, 2000);
+            }, 3000);
+        }
+
+        // Tab switching functionality
+        function switchTab(tabType) {
+            // Remove active class from all tabs and panels
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.interface-panel').forEach(panel => panel.classList.remove('active'));
+            
+            // Add active class to selected tab and panel
+            document.getElementById(`${tabType}-tab`).classList.add('active');
+            document.getElementById(`${tabType}-panel`).classList.add('active');
+        }
+
+        // Phone call functionality
+        function initiateCall() {
+            const button = document.querySelector('.phone-button');
+            const status = document.getElementById('phone-status');
+            
+            // Start calling state
+            button.classList.add('calling');
+            button.innerHTML = '<i class="fas fa-phone-slash"></i>';
+            status.innerHTML = '<p>Calling Liya AI Assistant...</p><small>Connecting to +61 2 8123 4567</small>';
+            
+            setTimeout(() => {
+                // Connected state
+                status.innerHTML = '<p>Connected to Liya!</p><small>AI Assistant is listening</small>';
+                
+                setTimeout(() => {
+                    // Conversation simulation
+                    status.innerHTML = '<p>In call with Liya</p><small>"How can I help with appointments today?"</small>';
+                    addActivityToFeed('Phone Call: Connected to AI Assistant', 'booking');
+                    
+                    setTimeout(() => {
+                        // Call completion
+                        status.innerHTML = '<p>Call completed successfully!</p><small>Appointment booking processed</small>';
+                        addActivityToFeed('Phone Booking: "Schedule John for Friday 2PM"', 'booking');
+                        
+                        setTimeout(() => {
+                            // Reset state
+                            button.classList.remove('calling');
+                            button.innerHTML = '<i class="fas fa-phone"></i>';
+                            status.innerHTML = '<p>Call Liya AI Assistant</p><small>Available 24/7 for appointments</small>';
+                        }, 3000);
+                    }, 4000);
+                }, 2000);
+            }, 3000);
+        }
+
+        // Test AI features
+        function testAIFeature(feature) {
+            const messages = {
+                booking: {
+                    title: 'AI Booking Test',
+                    content: '🤖 AI analyzing patient request...\n\n' +
+                           '✓ Patient: John Smith\n' +
+                           '✓ Condition: Back pain treatment\n' +
+                           '✓ Location preference: Bondi area\n' +
+                           '✓ Time preference: Morning slots\n\n' +
+                           '🎯 AI found optimal match:\n' +
+                           '• Thursday 10:00 AM with Sarah Adams\n' +
+                           '• Travel time: 12 minutes from previous appointment\n' +
+                           '• Route efficiency: 94%\n\n' +
+                           '✅ Booking confirmed & SMS sent!'
+                },
+                optimize: {
+                    title: 'AI Route Optimization',
+                    content: '🚗 AI analyzing today\'s schedule...\n\n' +
+                           '✓ Scanning 47 appointments across 10 therapists\n' +
+                           '✓ Analyzing traffic patterns\n' +
+                           '✓ Calculating optimal routes\n\n' +
+                           '🎯 Optimization Results:\n' +
+                           '• 3 routes improved\n' +
+                           '• 47 minutes total time saved\n' +
+                           '• 2 scheduling conflicts resolved\n' +
+                           '• Fuel efficiency increased by 18%\n\n' +
+                           '✅ All therapists notified of changes!'
+                },
+                status: {
+                    title: 'Live Status Check',
+                    content: '📊 Real-time system status:\n\n' +
+                           '🤖 AI Assistant: Online & Active\n' +
+                           '📅 Today\'s appointments: 47 scheduled\n' +
+                           '✅ On-time performance: 94%\n' +
+                           '🚗 Average travel time: 12 minutes\n' +
+                           '📱 Voice interactions: 28 today\n' +
+                           '🎯 Booking success rate: 98%\n\n' +
+                           '🔄 System health: Excellent\n' +
+                           '📡 Cliniko sync: Active\n' +
+                           '🗺️ Google Maps: Connected'
+                },
+                insights: {
+                    title: 'AI Insights & Recommendations',
+                    content: '💡 Smart Analytics Summary:\n\n' +
+                           '📈 Peak demand: 9-11 AM (consider more slots)\n' +
+                           '🗺️ High demand area: Bondi region (+30%)\n' +
+                           '⏰ Average session: 45 minutes\n' +
+                           '📞 No-show rate: 6% (below average)\n\n' +
+                           '🎯 AI Recommendations:\n' +
+                           '• Add 2 morning slots in Bondi area\n' +
+                           '• Optimize Sarah\'s route for efficiency\n' +
+                           '• Schedule buffer time for new patients\n' +
+                           '• Send reminders 24h + 2h before appointments'
+                }
+            };
+
+            const message = messages[feature];
+            if (message) {
+                alert(`${message.title}\n\n${message.content}`);
+                addActivityToFeed(`AI ${feature} test completed successfully`, feature === 'booking' ? 'booking' : 'optimization');
+            }
+        }
+
+        // Highlight capability features
+        function highlightFeature(feature) {
+            // Remove any existing highlights
+            document.querySelectorAll('.capability-item').forEach(item => {
+                item.style.background = 'rgba(255, 255, 255, 0.02)';
+            });
+            
+            // Highlight the selected feature
+            event.currentTarget.style.background = 'rgba(99, 102, 241, 0.2)';
+            
+            setTimeout(() => {
+                event.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+            }, 2000);
+        }
+
+        // Add activity to feed
+        function addActivityToFeed(message, type) {
+            const feed = document.querySelector('.activity-feed');
+            const icons = {
+                booking: 'fas fa-calendar-check',
+                optimization: 'fas fa-route',
+                reminder: 'fas fa-bell'
+            };
+            
+            const newActivity = document.createElement('div');
+            newActivity.className = 'activity-item';
+            newActivity.innerHTML = `
+                <div class="activity-icon ${type}">
+                    <i class="${icons[type] || 'fas fa-cog'}"></i>
+                </div>
+                <div class="activity-content">
+                    <h4>${message}</h4>
+                    <p>AI-powered action completed successfully with optimal results</p>
+                    <div class="activity-time">Just now</div>
+                </div>
+            `;
+            
+            // Insert at the beginning
+            const firstActivity = feed.querySelector('.activity-item');
+            if (firstActivity) {
+                feed.insertBefore(newActivity, firstActivity);
+            } else {
+                feed.appendChild(newActivity);
+            }
+            
+            // Remove excess items (keep max 4)
+            const activities = feed.querySelectorAll('.activity-item');
+            if (activities.length > 4) {
+                activities[activities.length - 1].remove();
+            }
+        }
+
+        // Auto-update activity feed
+        setInterval(() => {
+            const activities = [
+                { message: 'AI processed new booking request', type: 'booking' },
+                { message: 'Route automatically optimized', type: 'optimization' },
+                { message: 'Smart reminder sent to patient', type: 'reminder' },
+                { message: 'Phone booking completed successfully', type: 'booking' },
+                { message: 'Voice command processed via phone', type: 'booking' }
+            ];
+            
+            const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+            addActivityToFeed(randomActivity.message, randomActivity.type);
+        }, 15000);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('PhysioFlow AI Demo Loaded');
+        });
+
+        // Section switching functionality
+        function switchSection(sectionType) {
+            // Remove active class from all section tabs and contents
+            document.querySelectorAll('.section-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.section-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and content
+            document.getElementById(`${sectionType}-tab`).classList.add('active');
+            document.getElementById(`${sectionType}-section`).classList.add('active');
+        }
+
+        // Calendar week navigation
+        function changeWeek(direction) {
+            const weekDisplay = document.querySelector('.current-week');
+            const currentText = weekDisplay.textContent;
+            
+            // Simple demo - just update the display
+            if (direction > 0) {
+                weekDisplay.textContent = 'Week of Dec 18-24, 2023';
+                setTimeout(() => {
+                    weekDisplay.textContent = currentText;
+                }, 3000);
+            } else {
+                weekDisplay.textContent = 'Week of Dec 4-10, 2023';
+                setTimeout(() => {
+                    weekDisplay.textContent = currentText;
+                }, 3000);
+            }
+        }
+
+        // Route selection
+        function selectRoute(routeType) {
+            // Remove active class from all route buttons
+            document.querySelectorAll('.map-controls .control-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to selected button
+            event.currentTarget.classList.add('active');
+            
+            const routeStats = document.querySelector('.route-stats');
+            
+            if (routeType === 'time') {
+                // Update stats for fastest route
+                routeStats.innerHTML = `
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-route"></i></div>
+                        <div class="stat-details">
+                            <div class="stat-value">38 km</div>
+                            <div class="stat-label">Total Distance</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-details">
+                            <div class="stat-value">1.9 hrs</div>
+                            <div class="stat-label">Travel Time</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-leaf"></i></div>
+                        <div class="stat-details">
+                            <div class="stat-value">-18%</div>
+                            <div class="stat-label">CO2 Reduction</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-magic"></i></div>
+                        <div class="stat-details">
+                            <div class="stat-value">89%</div>
+                            <div class="stat-label">AI Efficiency</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Restore optimal route stats
+                routeStats.innerHTML = `
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-route"></i></div>
+                        <div class="stat-details">
+                            <div class="stat-value">42 km</div>
+                            <div class="stat-label">Total Distance</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-details">
+                            <div class="stat-value">2.3 hrs</div>
+                            <div class="stat-label">Travel Time</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-leaf"></i></div>
+                        <div class="stat-details">
+                            <div class="stat-value">-25%</div>
+                            <div class="stat-label">CO2 Reduction</div>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-magic"></i></div>
+                        <div class="stat-details">
+                            <div class="stat-value">94%</div>
+                            <div class="stat-label">AI Efficiency</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Main tab switching functionality
+        function switchMainTab(tabType) {
+            // Remove active class from all main tabs and content
+            document.querySelectorAll('.main-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.main-tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and content
+            document.getElementById(`${tabType}-main-tab`).classList.add('active');
+            document.getElementById(`${tabType}-content`).classList.add('active');
+        }
+    </script>
+</body>
+</html> 

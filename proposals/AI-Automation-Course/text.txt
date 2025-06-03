@@ -1,0 +1,517 @@
+AI career track
+
+Course
+1: AI Strategy & Foundations
+
+Module 1: AI Business
+Understanding
+
+Lesson 1: AI in Business: Types &
+Opportunities
+
+
+Types & Opportunities what AI is,
+what tasks it solves in business, where to earn money
+
+
+Lesson 2: AI Tools Landscape & Selection
+
+
+Overview of AI tools: ChatGPT, Claude,
+specialized services
+
+
+Lesson 3: What are AI Agents
+
+
+Conceptual explanation, agents vs
+simple AI tools
+
+
+Lesson 4: AI ROI & Business Value
+Assessment
+
+
+How to calculate profit from AI for
+business, value presentation
+
+
+ 
+
+
+ 
+
+
+Module 2: Prompt Engineering
+Mastery
+
+Lesson 1: Basic Prompt Engineering
+
+
+How to "talk" to AI: prompt
+structure, examples
+
+
+Lesson 2: Advanced Prompting Techniques
+
+
+Chain of Thought, Few-shot learning,
+roles and personas
+
+
+Lesson 3: Business Context Prompting
+
+
+Prompts for business tasks: sales,
+support, analysis
+
+
+Lesson 4: Prompt Optimization & Testing
+
+
+How to improve prompts, A/B testing,
+iterations
+
+
+Course
+2: Make Automations & AI Agents
+
+Module 1: Make.com Basics
+
+Lesson 1: What is Make.com and How Does It
+Work?
+
+
+Lesson 3: Overview of the Make.com Interface
+
+
+Lesson 4: Understanding Scenarios, Modules,
+and Connections
+
+
+Lesson 5: Common Triggers and Actions in Make
+
+
+Lesson 6: What Are Webhooks and How to Use
+Them in Make
+
+
+Lesson 7: Introduction to API Calls in Make
+
+
+Lesson 8: Build Your First Automation Scenario
+from Scratch
+
+
+Lesson 9: Understanding Iterators,
+Aggregators, and Routers
+
+
+ 
+
+
+Module 2: Connecting Make.com to
+External Services
+
+Lesson 1: How to Authenticate and Set Up
+External Apps in Make
+
+
+Lesson 2: Connecting Make to OpenAI (ChatGPT,
+Whisper, DALL·E)
+
+
+Lesson 3: Connecting Make to Google Sheets,
+Docs, and Drive
+
+
+Lesson 4: Connecting Make to Telegram, Slack,
+and Discord
+
+
+Lesson 5: Connecting Make to CRMs (HubSpot,
+Pipedrive, Notion)
+
+
+Lesson 6: Custom API Integration via HTTP
+Module
+
+
+Lesson 7: Connecting to E-commerce Platforms
+(Shopify, WooCommerce)
+
+
+Lesson 8: Automation with Email (Gmail,
+Outlook, Mailchimp)
+
+
+ 
+
+
+Module 3: Basic Automation
+Projects
+
+Lesson
+1: Automate Lead Capture → CRM → Slack Notification
+
+
+Lesson 2: Auto-Sync Google Form Responses to
+Notion + Email Alerts
+
+
+Lesson 3: Daily AI Summary Generator Using
+OpenAI + RSS Feeds
+
+
+Lesson 4: Automate Social Media Scheduling via
+Google Sheets
+
+
+Lesson 5: Build an Order Management System for
+E-commerce
+
+
+Lesson 6: AI Email Classifier and Auto-Replies
+
+
+Lesson 7: Automate Meeting Notes Summarization
+from Zoom Recordings
+
+
+Lesson 8: Auto-Generate Invoices and Send via
+Email
+
+
+Lesson 9: Automate Client Onboarding with
+Multi-Step Scenarios
+
+
+Lesson 10: Build Your Own AI Agent Workflow
+with Make + OpenAI
+
+
+Course 3: Advanced LLM Agents
+
+Skills:
+Advanced AI agents and systems
+
+
+Module 1: LLM Agent Architecture
+
+Урок 1: Simple Chatbot vs AI Agent vs LLM
+Agent
+
+
+Difference in architecture,
+capabilities and applications
+
+
+Урок 2: Agent Memory & Context Management
+
+
+How agent stores conversations,
+manages context
+
+
+Урок 3: Tool-Using Agents (Function Calling)
+
+
+Agent uses external tools: API,
+calculator, search
+
+
+Урок 4: Agent Planning & Reasoning
+Systems
+
+
+How agent plans actions to achieve
+complex goals
+
+
+Module 2: Advanced Agent
+Capabilities
+
+Урок 1: ReAct & Chain of Thought Agents
+
+
+Advanced reasoning techniques for
+agents
+
+
+Урок 2: Multi-Modal Agents (Text, Voice,
+Vision)
+
+
+Agents working with text, voice,
+images
+
+
+Урок 3: Agent Performance Optimization
+
+
+How to improve agent speed, accuracy,
+testing
+
+
+Урок 4: Agent Security & Safety Measures
+
+
+Agent security, preventing harmful
+usage
+
+
+Module 3: RAG &
+Knowledge-Based Agents
+
+Урок 1: RAG Implementation Fundamentals
+
+
+Agent works with company knowledge
+base
+
+
+Урок 2: Document Processing & Semantic
+Search
+
+
+Information search in documents,
+vector databases
+
+
+Урок 3: Multi-Source Knowledge Integration
+
+
+Agent uses various sources: documents,
+API, databases
+
+
+Урок 4: Knowledge Base Maintenance &
+Updates
+
+
+Knowledge base updates, versioning,
+consistency
+
+
+Course 4: N8N
+
+Module 1: N8N Basics
+
+Lesson 1: What is n8n?
+
+
+Lesson 2: Why use n8n?
+
+
+Lesson 3: Walkthrough of User Interface
+
+
+Lesson 4: Node Types and Categories
+
+
+Lesson 5: n8n Triggers
+
+
+Lesson 6: APIs
+
+
+Lesson 7: Webhooks
+
+
+Lesson 8: Building a Basic Workflow
+
+
+ 
+
+
+Module 2: How to Setup?
+
+Lesson 1: How to Connect n8n to External
+Services: Your Credential Setup Guide
+
+
+Lesson 2: How to Connect OpenAI’s LLMs to n8n
+
+
+Lesson 3: How to Connect Telegram to n8n
+
+
+Lesson 3.1: How to Connect WhatsApp to n8n
+
+
+Lesson 4: How to Connect LLMs to n8n Using
+Grok Fast AI Inference
+
+
+Lesson 5: How to Connect Google Gemini to n8n
+
+
+Lesson 7: How to Connect Any LLM to n8n via
+OpenRouter & HTTP Request (DeepSeek example)
+
+
+Lesson 8: How to Connect Google Services to
+n8n
+
+
+ 
+
+
+Module 3: Basic Automation
+
+Lesson 1: Build AI Automation Using a Pre-Made
+Template
+
+
+Lesson 2: Create Your First AI Automation to
+Manage and Classify Gmail Emails
+
+
+Lesson 3: Build Your First AI Agent from
+Scratch in n8n
+
+
+Lesson 4: Create a Fully Automated Onboarding
+System for New Clients
+
+
+Lesson 5: Build Your First RAG Agent with n8n
+& Pinecone (Retrieval-Augmented Generation)
+
+
+Lesson 6: Make Your AI Agent 3x Better with
+the "Think" Node
+
+
+Lesson 7: Create an AI Agent That Tracks Your
+Finances
+
+
+Lesson 8: Professional LinkedIn Post Generator
+
+
+Lesson 9: Create Social Media Content in
+Seconds!
+
+
+Lesson 10: This AI Agent Gives You The Best
+Daily News (About Any Topic)
+
+
+Course 5: AI Agents?
+
+Module 1: AI Agent for Shop
+Inventory
+
+Lesson 1: Create your AI agent
+
+
+Lesson 2: Add tools (scenarios)
+
+
+Lesson 3: Connect the agent to inputs and
+outputs
+
+
+Lesson 4: Test and refine the agent
+
+
+ 
+
+
+Module 2: AI Lead Gen System
+
+Lesson 1: Create your AI agent
+
+
+Lesson 2: Add tools (scenarios)
+
+
+Lesson 3: Connect the agent to inputs and
+outputs
+
+
+Lesson 4: Test and refine the agent
+
+
+ 
+
+
+Module 3: AI Agent for Sales
+
+Lesson 1: Create your AI agent
+
+
+Lesson 2: Add tools (scenarios)
+
+
+Lesson 3: Connect the agent to inputs and
+outputs
+
+
+Lesson 4: Test and refine the agent
+
+
+ 
+
+
+Module 4: AI Agent for X
+
+ 
+
+
+Module 5: AI Agent for X
+
+Course 6: Client Acquisition
+
+Module 1: Service Positioning
+& Pricing
+
+Lesson 1: AI Service Package Design
+
+
+Lesson 2: Value-Based Pricing Models
+
+
+Lesson 3: Competitive Differentiation
+
+
+Lesson 4: ROI Presentation Techniques
+
+
+ 
+
+
+Module 2: Client Acquisition
+& Sales
+
+Lesson 1: Lead Generation for AI Services
+
+
+Lesson 2: Discovery Call Framework
+
+
+Lesson 3: Proposal Writing & Pitching
+
+
+Lesson 4: Objection Handling & Closing
+
+
+ 
+
+
+Module 3: Data Reporting
+
+Lesson 1: Business Data Sources &
+Collection
+
+
+Lesson 2: Data Quality & Automated
+Cleaning
+
+
+Lesson 3: Integration Planning &
+Architecture
+
+
+Lesson 4: Privacy & GDPR Compliance
