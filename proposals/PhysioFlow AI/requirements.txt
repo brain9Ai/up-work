@@ -1,0 +1,390 @@
+Intial Requirement:
+Summary
+
+About Us
+
+We operate a mobile physiotherapy company in Sydney, Australia, with 10 physiotherapists serving the eastern suburbs, inner city, and inner west. We currently use Cliniko as our practice management software, but manual scheduling is time-consuming and inefficient — especially given travel time and changing patient availability.
+
+We’re seeking a developer or development team to build a custom scheduling dashboard or assistant that integrates with Cliniko and Google Maps to streamline scheduling, routing, and rescheduling tasks — while ensuring full compliance with Australian data privacy standards.
+
+⸻
+
+🔍 What We Need
+
+We’re looking for a web-based system (or tool) that can:
+
+✅ 1. Integrate with Cliniko
+• Use Cliniko’s API to:
+• Pull clinician calendars and appointment data.
+• Read/write patient availability (where applicable).
+• Create/update appointments and cancellations.
+
+✅ 2. Manage and Use Patient Availability
+• Store or pull patient availability windows (e.g. “Mondays after 1pm, Thursdays 9am–12pm”).
+• Use this info to:
+• Restrict offered time slots for bookings.
+• Suggest reschedules only within allowed windows.
+
+✅ 3. Smart New Appointment Booking
+• When a new referral comes in, find the most optimal time slot based on:
+• Patient availability
+• Physio availability
+• Travel time between appointments (Google Maps API)
+• Optional: Prioritize continuity of care with preferred physio
+
+✅ 4. Rescheduling & Shuffling
+• Allow admin team to:
+• Drag-and-drop appointments within a daily/weekly view
+• Automatically suggest reshuffles based on:
+• Travel efficiency
+• Gaps in the schedule
+• Cancelled or late-running appointments
+• Respect patient availability and consent before making changes
+
+✅ 5. Route Optimization
+• Use Google Maps API (or equivalent) to:
+• Plot daily routes for each physiotherapist
+• Show travel time between appointments
+• Suggest more efficient appointment order
+• Warn if routes are unrealistic or have excessive travel
+
+✅ 6. Dashboard & Interface
+• Web-based dashboard for team leader/admins:
+• View all clinician schedules for the day/week
+• Map-based appointment visualization
+• Reschedule or assign patients to different physios
+• Filter by suburb, physio, or appointment type
+• Show “suggested changes” with visual indicators
+
+✅ 7. Waitlist + Slot Filling (Phase 2 / Optional)
+• Keep track of patients who want earlier appointments
+• Auto-fill cancelled slots by:
+• Matching location and availability
+• Sending automated offers (email/SMS)
+• Updating Cliniko with accepted changes
+
+⸻
+
+🛡️ Privacy & Security Expectations
+
+This project involves sensitive health data. You must adhere to the following:
+
+📋 Australian Privacy Act (APPs) Compliance
+• Store data securely, encrypted at rest and in transit.
+• Access must be role-based — only authorized users see sensitive data.
+• All API keys and personal info must be stored server-side, not exposed to browsers.
+• No unnecessary patient data should be stored beyond what is needed for scheduling (e.g., no clinical notes).
+• Provide logging or auditing for changes to appointments.
+• Include admin controls for data deletion or patient data export if requested (data portability/right to access).
+• Prefer Australian-based cloud hosting, or international hosting with strict compliance standards (e.g. Google Cloud, AWS Sydney region).
+• Use secure authentication (e.g., email + 2FA for admins).
+• Ensure any use of Google Maps complies with their terms for healthcare applications.
+• Do not train or expose any patient data to external AI models unless explicitly approved.
+
+⸻
+
+🛠️ Preferred Tech Stack
+
+We’re flexible but prefer:
+• Frontend: React, Vue, or similar modern framework
+• Backend: Node.js, Firebase, Supabase, or Django
+• Database: PostgreSQL or Firebase
+• Integrations: Cliniko API, Google Maps API
+• Automation: Zapier or Make.com (where useful)
+
+⸻
+
+📦 Deliverables
+• Fully working web app with responsive admin interface
+• Cliniko API integration (OAuth or secure token)
+• Google Maps integration for routing
+• Secure cloud hosting setup (can be via Firebase, GCP, AWS)
+• Short documentation + walkthrough for our team
+• Optional: Waitlist/rescheduling logic as a second phase
+
+⸻
+
+💬 Please include in your proposal:
+• A brief summary of relevant experience (esp. healthcare, scheduling, APIs)
+• Examples of similar tools or dashboards you’ve built
+• Any questions or suggestions you have for the project
+• Timeline estimate (MVP + full version)
+• Quote (hourly or fixed price)
+• Security credentials or privacy experience (if applicable)
+
+
+
+
+Follow up questions by client:
+Thanks so much for your thoughtful proposal. Your experience and examples align well with what we’re looking for.
+
+
+We’re currently reviewing 2–3 top candidates and would love to get a clearer sense of:
+
+
+How you’d approach integrating both the Cliniko API and Google Maps API
+Whether you’d structure this as a single developer project or with a team
+Your preferred process for delivering the MVP phase (4–6 weeks)
+
+
+Looking forward to hearing from you!
+
+
+Best,
+Lyndsey
+Director, My Mobile Physio
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

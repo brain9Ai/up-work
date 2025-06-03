@@ -171,7 +171,7 @@ const appointmentQuery = {
 - **Audit Trail**: Log all API interactions for compliance
 - **Access Control**: Role-based permissions for Cliniko data access
 
-## 📅 **Simplified MVP Timeline (4-5 Weeks)**
+## 📅 **Simplified MVP Timeline (4-6 Weeks)**
 
 ### **Week 1: Foundation & Cliniko Integration**
 **Team Focus:**
@@ -195,7 +195,7 @@ const appointmentQuery = {
 - User authentication with role-based permissions
 - Comprehensive audit logging system
 
-### **Week 3: Maps & Travel Time**
+### **Week 3-4: Maps & Travel Time**
 **Team Focus:**
 - **Lead Developer**: Integrate Google Maps API for patient address geocoding
 - **Frontend Specialist**: Add map visualization and travel time display
@@ -206,7 +206,7 @@ const appointmentQuery = {
 - Basic travel time calculations between appointments
 - Privacy-compliant address handling
 
-### **Week 4: Testing & Polish**
+### **Week 5: Testing & Polish**
 **Team Focus:**
 - **Full Team**: Comprehensive testing, bug fixes, and user experience improvements
 - **Lead Developer**: Performance optimization and error handling
@@ -217,25 +217,23 @@ const appointmentQuery = {
 - User training documentation
 - 2-week post-launch support included
 
-### **Week 5 (Buffer): Deployment & Training**
+### **Week 6 (Buffer): Deployment & Training**
 - Production deployment and monitoring setup
 - User acceptance testing with your team
 - Training sessions and documentation handover
 
 ## 💰 **Revised Investment Structure**
 
-### **MVP Development (4-5 weeks):**
+### **MVP Development (4-6 weeks):**
 - **Team of 3 specialists**: **$8,000 - $12,000 AUD**
 - **Infrastructure & APIs**: $300 - $500 AUD/month
 - **Security compliance setup**: Included in base price
 
-### **Phase 2 Advanced Features (6-8 weeks):**
-- **AI optimization algorithms**: $12,000 - $18,000 AUD
-- **Advanced UI/UX features**: $8,000 - $12,000 AUD
-- **Mobile companion app**: $6,000 - $10,000 AUD
-- **Advanced analytics & reporting**: $4,000 - $8,000 AUD
-
-**Total Phase 2 Investment**: **$30,000 - $48,000 AUD**
+### **Phase 2 Advanced Features (8-12 weeks):**
+- **AI optimization algorithms**
+- **Advanced UI/UX features**
+- **Mobile companion app**
+- **Advanced analytics & reporting**
 
 ## 🔄 **Next Steps & Questions for You**
 
